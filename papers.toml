@@ -1,0 +1,409 @@
+[[papers]]
+Paper = "How to Select Datapoints for Efficient Human Evaluation of NLG Models?"
+Nickname = "subset2evaluate"
+Link = "https://aclanthology.org/2025.tacl-1.80.pdf"
+Problem = "item selection"
+Sequential = "no"
+Meta-evaluation = "ranking correlation, statistical significance of ranking"
+Code = "https://github.com/zouharvi/subset2evaluate"
+Critique = "Limited to NLG? No good discussion of possible biases."
+
+[[papers]]
+Paper = "Dynamically Allocating Evaluation Effort for Model Ranking"
+Nickname = "evaluation_bandit"
+Link = "https://vilda.net/papers/evaluation_bandit.pdf"
+Problem = "model selection"
+Sequential = "yes"
+Meta-evaluation = "weighted ranking correlation"
+Code = "https://github.com/zouharvi/evaluation-bandit"
+Critique = ""
+
+[[papers]]
+Paper = "tinyBenchmarks"
+Nickname = "tinyBenchmarks"
+Link = "https://arxiv.org/pdf/2402.14992"
+Problem = "item selection"
+Sequential = "no"
+Meta-evaluation = "absolute accuracy"
+Code = "https://github.com/felipemaiapolo/tinyBenchmarks"
+Critique = ""
+
+[[papers]]
+Paper = "How Benchmark Prediction from Fewer Data Misses the Mark"
+Nickname = "misses_the_mark"
+Link = "https://arxiv.org/abs/2506.07673"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Adaptive Budget Allocation in LLM-Augmented Surveys"
+Nickname = "adaptive_budget_allocation"
+Link = "https://arxiv.org/pdf/2604.12497"
+Problem = "?"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Stop Guessing When to Stop Testing: Efficient Model Evaluation with Just Enough Data"
+Nickname = "just_enough_data"
+Link = "https://openreview.net/forum?id=dIiV9FYt3i"
+Problem = "model selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Efficient Benchmarking (of Language Models)"
+Nickname = "efficient_benchmarking"
+Link = "https://aclanthology.org/2024.naacl-long.139.pdf"
+Problem = "model selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Fluid Language Model Benchmarking"
+Nickname = "fluid_benchmarking"
+Link = "https://arxiv.org/abs/2509.11106"
+Problem = "model selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "100 instances is all you need: predicting the success of a new LLM on unseen data by testing on a few instances"
+Nickname = "100_instances"
+Link = "https://arxiv.org/abs/2409.03563"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Scales++: Compute Efficient Evaluation Subset Selection"
+Nickname = "scales_plus_plus"
+Link = "https://arxiv.org/abs/2510.26384"
+Problem = "item Selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "FAQ: Efficient Evaluation of LLM Performance"
+Nickname = "faq"
+Link = "https://arxiv.org/abs/2601.20251"
+Problem = "item Selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Active Model Selection for Large Language Models (LLM Selector)"
+Nickname = "llm_selector"
+Link = "https://arxiv.org/abs/2510.09418"
+Problem = "model selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Label-Efficient Model Selection for Text Generation (DiffUse)"
+Nickname = "diffuse"
+Link = "https://aclanthology.org/2024.acl-long.456.pdf"
+Problem = "model selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Active Evaluation: Efficient NLG Evaluation with Few Pairwise Comparisons"
+Nickname = "active_evaluation"
+Link = "https://arxiv.org/abs/2203.06063"
+Problem = "model selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Anchor Points: Benchmarking Models with Much Fewer Examples"
+Nickname = "anchor_points"
+Link = "https://arxiv.org/abs/2309.08638"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Active Testing: Sample-Efficient Model Evaluation"
+Nickname = "active_testing"
+Link = "https://arxiv.org/abs/2103.05331"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "ATLAS: Adaptive Testing for Language Models"
+Nickname = "atlas"
+Link = "https://openreview.net/forum?id=iX39LhePyd"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "SubLIME: Subset selection for efficient LLM evaluation"
+Nickname = "sublime"
+Link = "https://aclanthology.org/2025.acl-long.1477.pdf"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Generative Active Testing: Efficient LLM Evaluation via Proxy Task Adaptation"
+Nickname = "generative_active_testing"
+Link = "https://arxiv.org/abs/2603.19264"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Towards Optimal Evaluation Efficiency for Large Language Models"
+Nickname = "optimal_eval_efficiency"
+Link = "https://aclanthology.org/2025.emnlp-main.716.pdf"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Beyond One-Size-Fits-All: Tailored Benchmarks for Efficient Evaluation"
+Nickname = "tailored_benchmarks"
+Link = "https://aclanthology.org/2025.acl-long.759/"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Active Testing of Large Language Models via Approximate Neyman Allocation"
+Nickname = "neyman_allocation"
+Link = "https://arxiv.org/pdf/2605.10075"
+Problem = "model selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Valid Best-Model Identification for LLM Evaluation via Low-Rank Factorization"
+Nickname = "valid_best_model"
+Link = "https://arxiv.org/pdf/2605.10405"
+Problem = "model+item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Select, Label, Evaluate: Active Testing in NLP"
+Nickname = "select_label_evaluate"
+Link = "https://arxiv.org/pdf/2603.21840"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Beyond Fixed Benchmarks and Worst-Case Attacks: Dynamic Boundary Evaluation for Language Models"
+Nickname = "dynamic_boundary"
+Link = "https://arxiv.org/pdf/2605.06213"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Robust LLM Performance Certification via Constrained Maximum Likelihood Estimation"
+Nickname = "robust_llm_certification"
+Link = "https://arxiv.org/abs/2604.03257"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Position: Science of AI Evaluation Requires Item-level Benchmark Data"
+Nickname = "item_level_benchmark"
+Link = "https://arxiv.org/pdf/2604.03244"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Measuring Five-Nines Reliability: Sample-Efficient LLM Evaluation in Saturated Benchmarks"
+Nickname = "five_nines_reliability"
+Link = "https://arxiv.org/pdf/2605.11209"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Fewer Battles, More Gain: An Information-Efficient Framework for Arena-based LLM Evaluation"
+Nickname = "fewer_battles_more_gain"
+Link = "https://openreview.net/pdf?id=XUVqFRp9oi"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "IQ Test for LLMs: An Evaluation Framework for Uncovering Core Skills in LLMs"
+Nickname = "iq_test_llms"
+Link = "https://arxiv.org/pdf/2507.20208"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "HyPAC: Cost-Efficient LLMs–Human Hybrid Annotation with PAC Error Guarantees"
+Nickname = "hypac"
+Link = "https://arxiv.org/pdf/2602.02550v1"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "How Many Iterations to Jailbreak? Dynamic Budget Allocation for Multi-Turn LLM Evaluation"
+Nickname = "jailbreak_iterations"
+Link = "https://arxiv.org/pdf/2605.06605"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Efficient Evaluation of LLM Performance with Statistical Guarantees"
+Nickname = "efficient_eval_statistical"
+Link = "https://arxiv.org/pdf/2601.20251"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Nonparametric LLM Evaluation from Preference Data"
+Nickname = "nonparametric_llm_eval"
+Link = "https://arxiv.org/pdf/2601.21816"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "The Scaling Law of Evaluation Failure: Why Simple Averaging Collapses Under Data Sparsity and Item Difficulty Gaps, and How Item Response Theory Recovers Ground Truth Across Domains"
+Nickname = "scaling_law_eval_failure"
+Link = "https://arxiv.org/pdf/2605.11205"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Cost-Efficient Estimation of General Abilities Across Benchmarks"
+Nickname = "cost_efficient_estimation"
+Link = "https://arxiv.org/pdf/2604.01418"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Rich Insights from Cheap Signals: Efficient Evaluations via Tensor Factorization"
+Nickname = "rich_insights_cheap_signals"
+Link = "https://arxiv.org/pdf/2603.02029"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Instance-Optimal Estimation with Multiple LLM Judges on a Budget"
+Nickname = "instance_optimal_estimation"
+Link = "https://arxiv.org/pdf/2605.23362"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Efficient Benchmarking Is Just Feature Selection and Multiple Regression"
+Nickname = "feature_selection_regression"
+Link = "https://arxiv.org/pdf/2605.25773"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Large Language Model Selection with Limited Annotations"
+Nickname = "llm_selection_limited"
+Link = "https://arxiv.org/pdf/2605.24981"
+Problem = ""
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
+
+[[papers]]
+Paper = "Lost in Benchmarks? Rethinking Large Language Model Benchmarking with Item Response Theory"
+Nickname = "lost_in_benchmarks"
+Link = "https://arxiv.org/abs/2505.15055"
+Problem = "item selection"
+Sequential = ""
+Meta-evaluation = ""
+Code = ""
+Critique = ""
