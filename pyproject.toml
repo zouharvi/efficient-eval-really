@@ -1,0 +1,41 @@
+[project]
+name = "efficient-evaluation-really"
+version = "0.0.0"
+description = "Critical perspective on efficient evaluation"
+readme = "README.md"
+license = { text = "apache-2.0" }
+requires-python = ">=3.12"
+authors = [{ name = "Vilém Zouhar", email = "vilem.zouhar@gmail.com" }]
+keywords = [
+    "evaluation",
+    "human evaluation",
+    "annotation",
+    "natural language processing",
+    "machine learning",
+]
+dependencies = [
+    "numpy>=2.0.0",
+    "matplotlib>=3.10",
+    "tqdm>=4.0.0",
+    "scipy>=1.10.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Repository = "https://github.com/zouharvi/efficient-eval-really"
+Issues = "https://github.com/zouharvi/efficient-eval-really/issues"
+
+[tool.setuptools]
+package-dir = { efficient_eval_really = "efficient_eval_really" }
+packages = ["efficient_eval_really"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# pip install -e . --config-settings editable_mode=strict
+
+[tool.ruff.lint]
+ignore = ["E402", "E731", "F401"]
