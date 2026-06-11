@@ -1,4 +1,6 @@
-from typing import TypedDict, Optional, NotRequired
+from typing import Callable, TypedDict, NotRequired
+import functools
+
 
 Model = str
 BudgetFrac = float
@@ -40,3 +42,11 @@ Furthermore, many methods are incremental, so we can save some compute by comput
 def fn(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
     pass
 """
+
+
+# define all methods
+from efficient_eval_really.methods.subset2evaluate import subset2evaluate_to_efficient_eval_really
+
+METHODS: dict[str, Callable[[Data, Budget], ModelScoresSubset]] = {
+    "subset2evaluate_diversity": functools.partial(subset2evaluate_to_efficient_eval_really, method_name="diversity"),
+}
