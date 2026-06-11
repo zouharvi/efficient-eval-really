@@ -19,6 +19,7 @@ dependencies = [
     "tqdm>=4.0.0",
     "scipy>=1.10.0",
     "subset2evaluate>=1.0.23",
+    "evaluation_bandit>=0.0.0",
 ]
 
 [project.optional-dependencies]

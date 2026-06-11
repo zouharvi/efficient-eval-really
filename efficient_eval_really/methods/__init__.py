@@ -1,4 +1,4 @@
-from typing import Callable, TypedDict, NotRequired
+from typing import Callable, TypedDict, NotRequired, Union
 import functools
 
 
@@ -9,6 +9,8 @@ Budgets = list[int]
 
 class DataItem(TypedDict):
     scores: dict[Model, float]
+    scores_metrics: NotRequired[dict[str, dict[Model, float]]]
+    cost: float
     src: NotRequired[str]
     tgt: NotRequired[dict[Model, str]]
     domain: NotRequired[str]
@@ -45,8 +47,13 @@ def fn(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
 
 
 # define all methods
-from efficient_eval_really.methods.subset2evaluate import subset2evaluate_to_efficient_eval_really
+from efficient_eval_really.methods.subset2evaluate import subset2evaluate_to_ours_budgets
+from efficient_eval_really.methods.evaluation_bandit import evaluation_bandit_to_ours_budgets
 
-METHODS: dict[str, Callable[[Data, Budget], ModelScoresSubset]] = {
-    "subset2evaluate_diversity": functools.partial(subset2evaluate_to_efficient_eval_really, method_name="diversity"),
+METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
+    "subset2evaluate_metricvar": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
+    "subset2evaluate_metricavg": functools.partial(subset2evaluate_to_ours_budgets, method="metric_avg", metric="metric"),
+    "subset2evaluate_metriccons": functools.partial(subset2evaluate_to_ours_budgets, method="metric_cons", metric="metric"),
+    "evaluation_bandit_ucb": functools.partial(evaluation_bandit_to_ours_budgets, method="upper_confidence_bound"),
+    "evaluation_bandit_uniform": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform"),
 }

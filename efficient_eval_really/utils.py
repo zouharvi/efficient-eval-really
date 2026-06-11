@@ -1,38 +1,12 @@
-import functools
-from methods import Data
-from typing import Callable
+import numpy as np
+from efficient_eval_really.methods import ModelScores, ModelScoresSubset
+import scipy.stats
 
-def load_data_synth(
-    seed=0, models=100, items=500, heteroscedastic=False, bins=None,
-) -> Data:
-    import numpy as np
-
-    random = np.random.RandomState(seed)
-
-    models_latent = np.clip(random.normal(loc=0.70, scale=0.25, size=models), 0, 1)
-    items_latent = random.normal(loc=0, scale=1, size=items)
-
-    model_latent_mean = np.mean(models_latent)
-
-    data_out: Data = []
-    for item_latent in items_latent:
-        scores_dict = {}
-        for model_i, model_latent in enumerate(models_latent):
-            if heteroscedastic:
-                error = random.normal(loc=0, scale=model_latent)
-            else:
-                error = random.normal(loc=0, scale=model_latent_mean)
-            score = np.clip(model_latent + item_latent + error, 0, 1)
-            if bins:
-                # get closest bin, not digitize
-                score = bins[np.argmin(np.abs(bins - score))]
-            scores_dict[f"model_{model_i + 1}"] = float(score)
-        data_out.append({"scores": scores_dict, "domain": "synth"})
-    return data_out
-
-
-load_data_synth_binary : Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 1])
-load_data_synth_likert : Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 0.25, 0.5, 0.75, 1])
-load_data_synth_hetero : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=True)
-load_data_synth_homo : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=False)
-
+def meta_evaluate_scores_subset(model_scores: ModelScoresSubset, model_scores_all: ModelScores) -> float:
+    # for now just simple spearman ranking
+    models = list(model_scores.keys())
+    model_avg = [float(np.mean(model_scores[model])) for model in models]
+    model_avg_true = [float(np.mean(model_scores_all[model])) for model in models]
+    return {
+        "corr_spearman": scipy.stats.spearmanr(model_avg, model_avg_true).correlation # type: ignore
+    }
