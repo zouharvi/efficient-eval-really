@@ -809,3 +809,18 @@ Source-only = "no"
 Structured-items = "no"
 Method = "Extends Computerized Adaptive Testing (CAT) from binary to continuous outcomes via a heteroskedastic normal distribution, and uses an adaptive multi-model ranker with pairwise stopping and cost-aware allocation."
 Meta-goal = "Adaptive testing to continuous bounded scores for efficient evaluation"
+
+
+[[papers]]
+Paper = "Cutting LLM Evaluation Costs with SySRs: A Bandit Algorithm that Provably Exploits Model Similarity"
+Nickname = "syrs_bandit"
+Link = "https://arxiv.org/pdf/2606.07726"
+Problem = "model selection"
+Sequential = "yes"
+Meta-evaluation = "error rate"
+Code = "https://github.com/zifanlyu/llm-bandits-sysrs"
+Critique = ""
+Source-only = "no"
+Structured-items = "no"
+Method = "A correlation-aware best-arm identification algorithm called Synchronized Successive Rejects (SySRs) that evaluates all remaining models on the same set of test queries at each stage to exploit model similarity."
+Meta-goal = "Efficient model selection via synchronized successive rejects"
