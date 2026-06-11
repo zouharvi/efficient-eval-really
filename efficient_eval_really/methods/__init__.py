@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, Optional, NotRequired
 
 Model = str
 BudgetFrac = float
@@ -6,11 +6,14 @@ Budget = int
 Budgets = list[int]
 
 class DataItem(TypedDict):
-    src: str
-    tgt: dict[Model, str]
     scores: dict[Model, float]
+    src: NotRequired[str]
+    tgt: NotRequired[dict[Model, str]]
+    domain: NotRequired[str]
+
 
 Data = list[DataItem]
+# don't use DataSubset
 DataSubset = Data
 
 ModelScores = dict[Model, list[float]]

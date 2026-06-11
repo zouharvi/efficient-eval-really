@@ -1,8 +1,10 @@
 import functools
+from methods import Data
+from typing import Callable
 
 def load_data_synth(
     seed=0, models=100, items=500, heteroscedastic=False, bins=None,
-) -> list[dict[str, list[dict]]]:
+) -> Data:
     import numpy as np
 
     random = np.random.RandomState(seed)
@@ -12,7 +14,7 @@ def load_data_synth(
 
     model_latent_mean = np.mean(models_latent)
 
-    data_out = []
+    data_out: Data = []
     for item_latent in items_latent:
         scores_dict = {}
         for model_i, model_latent in enumerate(models_latent):
@@ -24,13 +26,13 @@ def load_data_synth(
             if bins:
                 # get closest bin, not digitize
                 score = bins[np.argmin(np.abs(bins - score))]
-            scores_dict[f"model_{model_i + 1}"] = {"human": float(score)}
-        data_out.append({"scores": scores_dict, "cost": 1, "domain": "synth"})
+            scores_dict[f"model_{model_i + 1}"] = float(score)
+        data_out.append({"scores": scores_dict, "domain": "synth"})
     return data_out
 
 
-load_data_synth_binary = functools.partial(load_data_synth, bins=[0, 1])
-load_data_synth_likert = functools.partial(load_data_synth, bins=[0, 0.25, 0.5, 0.75, 1])
-load_data_synth_hetero = functools.partial(load_data_synth, heteroscedastic=True)
-load_data_synth_homo = functools.partial(load_data_synth, heteroscedastic=False)
+load_data_synth_binary : Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 1])
+load_data_synth_likert : Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 0.25, 0.5, 0.75, 1])
+load_data_synth_hetero : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=True)
+load_data_synth_homo : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=False)
 
