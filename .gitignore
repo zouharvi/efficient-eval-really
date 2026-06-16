@@ -1,6 +1,7 @@
 # Custom
 .vscode
 computed/
+environment.yml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
