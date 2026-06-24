@@ -4,13 +4,13 @@ from sklearn.metrics import pairwise_distances
 from efficient_eval_really.methods import Data, Budgets, ModelScoresSubset, ModelScoresAtBudget
 
 
-def _kmedoids(D: np.ndarray, k: int, seed: int = 42) -> list[int]:
-    """PAM K-Medoids on a precomputed distance matrix."""
-    n = D.shape[0]
-    if k >= n:
+def _kmedoids(D: np.ndarray, k: int, seed: int = 42) -> list[int]:  # D= Distance Matrix of Items, k= number of clusters
+    """Implements PAM K-Medoids on a precomputed distance matrix."""
+    n = D.shape[0] # n=number of items
+    if k >= n: # edge case with less items that desired clusters
         return list(range(n))
     medoids = list(np.random.default_rng(seed).choice(n, k, replace=False))
-    for _ in range(100):
+    for _ in range(100): # at most 100 iterations of the PAM update loop
         assignments = np.argmin(D[:, medoids], axis=1)
         new_medoids = []
         for c in range(k):
