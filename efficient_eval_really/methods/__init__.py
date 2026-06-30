@@ -50,6 +50,7 @@ def fn(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
 from efficient_eval_really.methods.subset2evaluate import subset2evaluate_to_ours_budgets
 from efficient_eval_really.methods.evaluation_bandit import evaluation_bandit_to_ours_budgets
 from efficient_eval_really.methods.tailored_benchmarks import tailored_benchmarks_budgets
+from efficient_eval_really.methods.anchor_points import anchor_points_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "subset2evaluate_metricvar": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -58,4 +59,5 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "evaluation_bandit_ucb": functools.partial(evaluation_bandit_to_ours_budgets, method="upper_confidence_bound"),
     "evaluation_bandit_uniform": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform"),
     "tailored_benchmarks": tailored_benchmarks_budgets,
+    "anchor_points": anchor_points_budgets,
 }
