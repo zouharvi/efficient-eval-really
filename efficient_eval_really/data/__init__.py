@@ -50,7 +50,7 @@ def load_data_subset2evaluate_translation():
 def load_data_subset2evaluate_summeval():
     import subset2evaluate.utils
 
-    data = subset2evaluate.utils.load_data_summeval(normalize=False, load_extra=True)
+    data = subset2evaluate.utils.load_data_summeval(normalize=False, load_extra=False)
     data_new = []
     for line in data:
         data_new.append({
@@ -80,5 +80,5 @@ DATA_FN = lambda: {
     "5 models": load_data_synth_5models(),
     "200 models": load_data_synth_200models(),
     "Translation": load_data_subset2evaluate_translation(),
-    "Summarization": load_data_subset2evaluate_summeval()
+    # "Summarization": load_data_subset2evaluate_summeval()
 }

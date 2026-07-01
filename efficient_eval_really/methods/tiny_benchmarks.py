@@ -1,7 +1,4 @@
 import numpy as np
-from scipy.optimize import minimize
-from sklearn.cluster import KMeans
-from sklearn.metrics import pairwise_distances
 from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
 
 
@@ -12,6 +9,8 @@ def _binarize(S: np.ndarray) -> np.ndarray:
 
 def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
     """K-Means clustering; return index of item nearest each centroid."""
+    from sklearn.cluster import KMeans
+    from sklearn.metrics import pairwise_distances
     kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
     kmeans.fit(X)
     return pairwise_distances(kmeans.cluster_centers_, X).argmin(axis=1).tolist()
@@ -19,6 +18,7 @@ def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
 
 def _fit_irt(Y: np.ndarray, D: int = 10) -> np.ndarray:
     """Fit multidim 2PL IRT on Y (n_models, n_items) via MLE. Returns (n_items, 2*D) embeddings."""
+    from scipy.optimize import minimize
     n_models, n_items = Y.shape
     eps = 1e-8
 

@@ -1,6 +1,4 @@
 import numpy as np
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import pairwise_distances
 from efficient_eval_really.methods import Data, Budgets, ModelScoresSubset, ModelScoresAtBudget
 
 
@@ -25,6 +23,8 @@ def _kmedoids(D: np.ndarray, k: int, seed: int = 42) -> list[int]:  # D= Distanc
 
 def tailored_benchmarks_budgets(data: Data, budgets: Budgets, g_frac: float = 0.5) -> ModelScoresAtBudget:
     """TailoredBench (Yuan et al., ACL 2025): per-model tailored item subsets via K-Medoids."""
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import pairwise_distances
     models = list(data[0]["scores"].keys())
     S = np.array([[item["scores"][m] for m in models] for item in data])  # (n_items, n_models)
     n_items, n_models = S.shape
