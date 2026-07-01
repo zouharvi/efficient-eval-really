@@ -852,3 +852,18 @@ Source-only = "no"
 Structured-items = "no"
 Method = "Formulates cost-aware LLM evaluation as a Bayesian bandit problem and uses Gittins indices to adaptively allocate benchmark queries under heterogeneous costs."
 Meta-goal = "Efficient cost-aware model selection via Bayesian bandit Gittins indices"
+
+
+[[papers]]
+Paper = "Extending Item Response Theory for Efficient and Meaningful Multilingual Evaluation"
+Nickname = "multilingual_irt"
+Link = "https://arxiv.org/pdf/2606.15643"
+Problem = "performance estimation"
+Sequential = "no"
+Meta-evaluation = "binary cross-entropy"
+Code = "https://github.com/gililior/multilingual_irt"
+Critique = ""
+Source-only = "no"
+Structured-items = "yes"
+Method = "Extends Item Response Theory with per-language difficulty deviations, split discriminability separating content from language effects, and per-language ability residuals to predict unobserved instances and detect translation errors."
+Meta-goal = "Efficient and meaningful multilingual evaluation"
