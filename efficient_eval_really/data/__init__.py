@@ -40,7 +40,7 @@ def load_data_subset2evaluate_translation():
     for line in data:
         data_new.append({
             "src": line["src"], "tgt": line["tgt"],
-            "scores": {model: line["scores"][model]["human"] for model in line["scores"]},
+            "scores": {model: line["scores"][model]["human"]/100 for model in line["scores"]},
             "scores_metrics": {model: {"metric": line["scores"][model]["MetricX-25"]} for model in line["scores"]},
             "cost": 1,
             "domain": "wmt25/en-cs",
