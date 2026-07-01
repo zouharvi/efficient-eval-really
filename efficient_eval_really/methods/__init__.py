@@ -51,6 +51,7 @@ from efficient_eval_really.methods.subset2evaluate import subset2evaluate_to_our
 from efficient_eval_really.methods.evaluation_bandit import evaluation_bandit_to_ours_budgets
 from efficient_eval_really.methods.tailored_benchmarks import tailored_benchmarks_budgets
 from efficient_eval_really.methods.anchor_points import anchor_points_budgets
+from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -61,4 +62,6 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Random (nonsquare)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform_nonsquare"),
     "Tailored Benchmarks": tailored_benchmarks_budgets,
     "Anchor Points": anchor_points_budgets,
+    "tiny_benchmarks_clustering": functools.partial(tiny_benchmarks_budgets, method="clustering"),
+    "tiny_benchmarks_irt": functools.partial(tiny_benchmarks_budgets, method="irt"),
 }
