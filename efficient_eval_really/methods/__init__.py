@@ -53,11 +53,12 @@ from efficient_eval_really.methods.tailored_benchmarks import tailored_benchmark
 from efficient_eval_really.methods.anchor_points import anchor_points_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
-    "subset2evaluate_metricvar": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
-    "subset2evaluate_metricavg": functools.partial(subset2evaluate_to_ours_budgets, method="metric_avg", metric="metric"),
-    "subset2evaluate_metriccons": functools.partial(subset2evaluate_to_ours_budgets, method="metric_cons", metric="metric"),
-    "evaluation_bandit_ucb": functools.partial(evaluation_bandit_to_ours_budgets, method="upper_confidence_bound"),
-    "evaluation_bandit_uniform": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform"),
-    "tailored_benchmarks": tailored_benchmarks_budgets,
-    "anchor_points": anchor_points_budgets,
+    "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
+    "Metric Average (difficulty)": functools.partial(subset2evaluate_to_ours_budgets, method="metric_avg", metric="metric"),
+    "Metric Consistency": functools.partial(subset2evaluate_to_ours_budgets, method="metric_cons", metric="metric"),
+    "UCB": functools.partial(evaluation_bandit_to_ours_budgets, method="upper_confidence_bound"),
+    "Random (uniform)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform"),
+    "Random (nonsquare)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform_nonsquare"),
+    "Tailored Benchmarks": tailored_benchmarks_budgets,
+    "Anchor Points": anchor_points_budgets,
 }

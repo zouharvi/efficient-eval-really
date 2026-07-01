@@ -40,8 +40,8 @@ load_data_synth_homo : Callable[..., Data] = functools.partial(load_data_synth, 
 
 synth_kwargs = dict(seed=0, models=20, items=500)
 DATA_FN = lambda: {
-    "synth_binary": load_data_synth_binary(**synth_kwargs),
-    "synth_likert": load_data_synth_likert(**synth_kwargs),
-    "synth_hetero": load_data_synth_hetero(**synth_kwargs),
-    "synth_homo": load_data_synth_homo(**synth_kwargs),
+    "Binary (s)": load_data_synth_binary(**synth_kwargs),
+    "Likert (s)": load_data_synth_likert(**synth_kwargs),
+    "Heterosc. (s)": load_data_synth_hetero(**synth_kwargs),
+    "Homosc. (s)": load_data_synth_homo(**synth_kwargs),
 }

@@ -12,5 +12,7 @@ def evaluation_bandit_to_ours_budgets(data: Data, budgets: Budgets, method: str,
         return evaluation_bandit.algorithms.upper_confidence_bound(data=data, budgets=budgets)
     elif method == "uniform":
         return evaluation_bandit.algorithms.uniform(data=data, budgets=budgets)
+    elif method == "uniform_nonsquare":
+        return evaluation_bandit.algorithms.uniform_nonsquare(data=data, budgets=budgets)
     else:
         raise ValueError(f"Unknown method_name: {method}")
