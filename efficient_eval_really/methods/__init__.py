@@ -62,6 +62,6 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Random (nonsquare)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform_nonsquare"),
     "Tailored Benchmarks": tailored_benchmarks_budgets,
     "Anchor Points": anchor_points_budgets,
-    "tiny_benchmarks_clustering": functools.partial(tiny_benchmarks_budgets, method="clustering"),
-    "tiny_benchmarks_irt": functools.partial(tiny_benchmarks_budgets, method="irt"),
+    "Tiny Benchmarks (clustering)": functools.partial(tiny_benchmarks_budgets, method="clustering"),
+    "Tiny Benchmarks (IRT)": functools.partial(tiny_benchmarks_budgets, method="irt"),
 }
