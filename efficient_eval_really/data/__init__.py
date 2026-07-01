@@ -67,6 +67,8 @@ load_data_synth_binary : Callable[..., Data] = functools.partial(load_data_synth
 load_data_synth_likert : Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 0.25, 0.5, 0.75, 1])
 load_data_synth_hetero : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=True)
 load_data_synth_homo : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=False)
+load_data_synth_5models : Callable[..., Data] = functools.partial(load_data_synth, models=5, heteroscedastic=False)
+load_data_synth_200models : Callable[..., Data] = functools.partial(load_data_synth, models=200, heteroscedastic=False)
 
 
 # TODO: some selector for src-based?
@@ -75,6 +77,8 @@ DATA_FN = lambda: {
     "Likert (s)": load_data_synth_likert(),
     "Heterosc. (s)": load_data_synth_hetero(),
     "Homosc. (s)": load_data_synth_homo(),
+    "5 models": load_data_synth_5models(),
+    "200 models": load_data_synth_200models(),
     "Translation": load_data_subset2evaluate_translation(),
     "Summarization": load_data_subset2evaluate_summeval()
 }
