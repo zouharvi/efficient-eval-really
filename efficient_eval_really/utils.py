@@ -9,5 +9,6 @@ def meta_evaluate_scores_subset(model_scores: ModelScoresSubset, model_scores_al
     model_avg_true = [float(np.mean(model_scores_all[model])) for model in models]
     return {
         "corr_spearman": scipy.stats.spearmanr(model_avg, model_avg_true).correlation, # type: ignore
+        "corr_wtau": scipy.stats.weightedtau(model_avg, model_avg_true, weigher=lambda rank: 1 / (rank + 1)).correlation, # type: ignore
         "abs_mae": float(np.mean(np.abs(np.array(model_avg) - np.array(model_avg_true)))),
     }

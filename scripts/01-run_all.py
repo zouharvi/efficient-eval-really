@@ -29,9 +29,9 @@ BUDGETS_FRAC = np.linspace(0.1, 1.0, 10)
 
 # prepare the parallelization queue
 parallelization_queue = []
-for method_name, method_fn in tqdm.tqdm(list(efficient_eval_really.methods.METHODS_BUDGETS.items())):
+for method_name, method_fn in efficient_eval_really.methods.METHODS_BUDGETS.items():
     results_out[method_name] = results_out.get(method_name, {})
-    for data_name, data in tqdm.tqdm(DATA.items()):
+    for data_name, data in DATA.items():
         # skip if already computed
         if not args.no_reuse and data_name in results_out[method_name]:
             continue
