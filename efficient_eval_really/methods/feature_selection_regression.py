@@ -512,7 +512,6 @@ def feature_selection_regression_budgets(
     seed: int = 42,
 ) -> ModelScoresAtBudget:
     """This approach selects a coreset using Minimum Redundancy Maximum Relevance (mRMR). 
-    It can then use regression from coreset true scores to proxy global score.
 
     User options:
     - method: "mid" for relevance minus redundancy, "miq" for relevance divided
