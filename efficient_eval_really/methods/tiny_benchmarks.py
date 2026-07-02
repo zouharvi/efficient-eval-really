@@ -26,7 +26,7 @@ def _fit_irt(Y: np.ndarray, D: int = 10) -> np.ndarray:
     mean_p = np.clip(Y.mean(axis=0), eps, 1 - eps)
     # warm-start: first dim = scalar 2PL, remaining dims = 0
     A0 = np.zeros((n_items, D)); A0[:, 0] = 1.0
-    B0 = np.zeros((n_items, D)); B0[:, 0] = np.log(mean_p / (1 - mean_p))
+    B0 = np.zeros((n_items, D)); B0[:, 0] = -np.log(mean_p / (1 - mean_p))
     x0 = np.concatenate([A0.ravel(), B0.ravel(), np.zeros(n_models * D)])
 
     def nll(x):
