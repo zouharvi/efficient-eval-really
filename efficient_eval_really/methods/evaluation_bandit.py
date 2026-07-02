@@ -10,6 +10,8 @@ def evaluation_bandit_to_ours(data: Data, budget: Budget, method: str, **kwargs)
 def evaluation_bandit_to_ours_budgets(data: Data, budgets: Budgets, method: str, **kwargs) -> ModelScoresAtBudget:
     if method == "upper_confidence_bound":
         return evaluation_bandit.algorithms.upper_confidence_bound(data=data, budgets=budgets)
+    elif method == "weighted_sampling":
+        return evaluation_bandit.algorithms.weighted_sampling(data=data, budgets=budgets)
     elif method == "uniform":
         return evaluation_bandit.algorithms.uniform(data=data, budgets=budgets)
     elif method == "uniform_nonsquare":

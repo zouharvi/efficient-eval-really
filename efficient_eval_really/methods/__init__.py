@@ -58,6 +58,7 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Average (difficulty)": functools.partial(subset2evaluate_to_ours_budgets, method="metric_avg", metric="metric"),
     "Metric Consistency": functools.partial(subset2evaluate_to_ours_budgets, method="metric_cons", metric="metric"),
     "UCB": functools.partial(evaluation_bandit_to_ours_budgets, method="upper_confidence_bound"),
+    "Weighted Sampling": functools.partial(evaluation_bandit_to_ours_budgets, method="weighted_sampling"),
     "Random (uniform)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform"),
     "Random (nonsquare)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform_nonsquare"),
     "Tailored Benchmarks": tailored_benchmarks_budgets,
