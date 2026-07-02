@@ -52,6 +52,7 @@ from efficient_eval_really.methods.evaluation_bandit import evaluation_bandit_to
 from efficient_eval_really.methods.tailored_benchmarks import tailored_benchmarks_budgets
 from efficient_eval_really.methods.anchor_points import anchor_points_budgets
 from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
+from efficient_eval_really.methods.feature_selection_regression import feature_selection_regression_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -65,4 +66,6 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Anchor Points": anchor_points_budgets,
     "Tiny Benchmarks (clustering)": functools.partial(tiny_benchmarks_budgets, method="clustering"),
     "Tiny Benchmarks (IRT)": functools.partial(tiny_benchmarks_budgets, method="irt"),
+    "mRMR with Regression (kernel ridge)": functools.partial(feature_selection_regression_budgets, regressor="kernel_ridge"),
+    "mRMR with Regression (ridge)": functools.partial(feature_selection_regression_budgets, regressor="ridge"),
 }
