@@ -66,5 +66,5 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Anchor Points": anchor_points_budgets,
     "Tiny Benchmarks (clustering)": functools.partial(tiny_benchmarks_budgets, method="clustering"),
     "Tiny Benchmarks (IRT)": functools.partial(tiny_benchmarks_budgets, method="irt"),
-    "mRMR with Regression": feature_selection_regression_budgets,
+    "mRMR": feature_selection_regression_budgets,
 }
