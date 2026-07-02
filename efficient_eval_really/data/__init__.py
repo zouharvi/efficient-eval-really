@@ -72,13 +72,17 @@ load_data_synth_200models : Callable[..., Data] = functools.partial(load_data_sy
 
 
 # TODO: some selector for src-based?
-DATA_FN = lambda: {
-    "Binary (s)": load_data_synth_binary(),
-    "Likert (s)": load_data_synth_likert(),
-    "Heterosc. (s)": load_data_synth_hetero(),
-    "Homosc. (s)": load_data_synth_homo(),
-    "5 models": load_data_synth_5models(),
-    "200 models": load_data_synth_200models(),
-    "Translation": load_data_subset2evaluate_translation(),
-    # "Summarization": load_data_subset2evaluate_summeval()
+# TODO: mark how many times the dataset should be run and averaged
+_DATA: dict[str, Callable[[], Data]] = {
+    "Binary (s)": load_data_synth_binary,
+    "Likert (s)": load_data_synth_likert,
+    "Heterosc. (s)": load_data_synth_hetero,
+    "Homosc. (s)": load_data_synth_homo,
+    "5 models": load_data_synth_5models,
+    "200 models": load_data_synth_200models,
+    "Translation": load_data_subset2evaluate_translation,
+    # "Summarization": load_data_subset2evaluate_summeval,
 }
+
+def get_data_dict_all() -> dict[str, Data]:
+    return {k: v() for k, v in _DATA.items()}

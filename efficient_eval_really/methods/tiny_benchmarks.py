@@ -11,6 +11,7 @@ def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
     """K-Means clustering; return index of item nearest each centroid."""
     from sklearn.cluster import KMeans
     from sklearn.metrics import pairwise_distances
+    # TODO: hide warning messages
     kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
     kmeans.fit(X)
     return pairwise_distances(kmeans.cluster_centers_, X).argmin(axis=1).tolist()
