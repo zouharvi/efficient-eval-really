@@ -12,7 +12,7 @@ from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
 Method = Literal["mid", "miq", "relevance"]
-Regressor = Literal["ridge", "kernel_ridge"]
+Regressor = Literal["ridge", "kernel_ridge"] | None
 
 
 class MRMRPred:
@@ -350,14 +350,13 @@ class MRMRPred:
         coreset_size: int,
         seed: int = 42,
     ) -> "MRMRPred":
-        """Fit MRMR feature selection and regression model.
+        """Fit MRMR feature selection.
 
-        Relevance is always measured against the per-model average benchmark
-        score (the ``_y`` target). The fitted regressor also predicts that
-        same average score from the selected coreset.
+        Relevance is always measured against the per-model average proxy
+        score.
 
         Args:
-            source_full_scores: Matrix of shape (M models, N questions)
+            source_full_scores: Proxy score matrix of shape (M models, N questions)
             coreset_size: Number of features to select
             seed: Random seed for reproducibility
 
@@ -384,9 +383,7 @@ class MRMRPred:
 
         mi_rel, mi_red_batch = self._get_mi_estimators(binary)
 
-        # Relevance target and regression target are both mean benchmark score.
         relevance_target = source_full_scores.mean(-1)
-        regression_target = relevance_target
 
         # Precompute relevance for every point (MI with relevance_target); it does not change during selection
         relevance_per_idx = np.array(
@@ -409,9 +406,6 @@ class MRMRPred:
                 coreset_rel_only.append(float(relevance_per_idx[pick]))
                 coreset_red_only.append(0.0)
             self.compressed_data_indices = np.array(selected_indices_flat)
-
-            X = source_full_scores[:, self.compressed_data_indices]
-            self.rgs = self._build_regressor(X, regression_target)
             return self
 
         # Global relevance statistics (across ALL questions)
@@ -465,11 +459,10 @@ class MRMRPred:
                 )
 
         self.compressed_data_indices = np.array(selected_indices)
-    
-        # Train regressor on selected features (always predicting mean score)
-        X = source_full_scores[:, self.compressed_data_indices]
-        self.rgs = self._build_regressor(X, regression_target)
+        return self
 
+    def fit_regressor(self, X: np.ndarray, y: np.ndarray) -> "MRMRPred":
+        self.rgs = self._build_regressor(X, y)
         return self
 
     def get_coreset(self) -> np.ndarray:
@@ -494,37 +487,47 @@ class MRMRPred:
         return self.rgs.predict(target_coreset_scores).ravel()
 
 
-def _score_matrix(data: Data) -> tuple[list[str], np.ndarray]:
-    models = list(data[0]["scores"].keys())
-    scores = np.array([[item["scores"][model] for item in data] for model in models])
-    return models, scores
+def _score_matrices(data: Data, metric: str) -> tuple[list[str], np.ndarray, np.ndarray]:
+    models = list(data[0]["scores_metrics"].keys())
+    metric_scores = np.array(
+        [[item["scores_metrics"][model][metric] for item in data] for model in models],
+        dtype=float,
+    )
+    true_scores = np.array(
+        [[item["scores"][model] for item in data] for model in models],
+        dtype=float,
+    )
+    return models, metric_scores, true_scores
 
 
 def feature_selection_regression_budgets(
     data: Data,
     budgets: Budgets,
     method: Method = "miq",
-    regressor: Regressor = "ridge",
+    regressor: Regressor = None,
     binary_mi_k: int = 5,
     continuous_mi_k: int = 8,
     kernel_degree: int = 2,
+    metric: str = "metric",
     seed: int = 42,
 ) -> ModelScoresAtBudget:
     """This approach selects a coreset using Minimum Redundancy Maximum Relevance (mRMR). 
-    It then uses regression to predict the full benchmark score.
+    It can then use regression from coreset true scores to proxy global score.
 
     User options:
     - method: "mid" for relevance minus redundancy, "miq" for relevance divided
       by redundancy, or "relevance" for MI-to-target only.
     - regressor: "ridge" for RidgeCV or "kernel_ridge" for polynomial
-      KernelRidge with leave-one-out alpha selection.
+      KernelRidge with leave-one-out alpha selection. None returns true scores
+      on the selected coreset items without regression.
     - binary_mi_k: nearest-neighbor k for Ross MI on binary data. Defaults to 5 as per paper optimal.
     - continuous_mi_k: nearest-neighbor k for LNC MI on continuous data.
       Defaults to 8 as per paper optimal.
     - kernel_degree: polynomial degree for kernel_ridge.
+    - metric: metric score key to use from scores_metrics.
     - seed: random seed used before MRMR fitting.
     """
-    models, scores = _score_matrix(data)
+    models, metric_scores, true_scores = _score_matrices(data, metric=metric)
     n_models = len(models)
     n_items = len(data)
 
@@ -537,12 +540,27 @@ def feature_selection_regression_budgets(
             binary_mi_k=binary_mi_k,
             continuous_mi_k=continuous_mi_k,
             kernel_degree=kernel_degree,
-        ).fit(scores, coreset_size=coreset_size, seed=seed)
+        ).fit(metric_scores, coreset_size=coreset_size, seed=seed)
 
         coreset = predictor.get_coreset()
-        predictions = predictor.predict(scores[:, coreset])
-        results.append(
-            {model: [float(prediction)] for model, prediction in zip(models, predictions)}
-        )
+        if regressor is None:
+            results.append(
+                {
+                    model: [float(true_scores[model_i, item_i]) for item_i in coreset]
+                    for model_i, model in enumerate(models)
+                }
+            )
+        else:
+            # train regressor with true coreset scores to predict proxy global score
+            # This is best suited for when we have "train" models where we know the true scores over all items and can train this regressor, which is then used
+            # for test models where we only have the coreset scores.
+            # Currently, since we have to use proxy global score, there is a metric mismatch and the following is not useful. 
+            X = true_scores[:, coreset]
+            y = metric_scores.mean(-1)
+            predictor.fit_regressor(X, y)
+            predictions = predictor.predict(X)
+            results.append(
+                {model: [float(prediction)] for model, prediction in zip(models, predictions)}
+            )
 
     return results
