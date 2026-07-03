@@ -22,11 +22,12 @@ def _kmedoids(D: np.ndarray, k: int, seed: int = 42) -> list[int]:  # D= Distanc
 
 
 def tailored_benchmarks_budgets(data: Data, budgets: Budgets, g_frac: float = 0.5) -> ModelScoresAtBudget:
-    """TailoredBench (Yuan et al., ACL 2025): per-model tailored item subsets via K-Medoids."""
+    """TailoredBench: per-model tailored item subsets via K-Medoids."""
     from sklearn.preprocessing import StandardScaler
     from sklearn.metrics import pairwise_distances
     models = list(data[0]["scores"].keys())
-    S = np.array([[item["scores"][m] for m in models] for item in data])  # (n_items, n_models)
+    metric = next(iter(data[0]["scores_metrics"][models[0]]))
+    S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])  # (n_items, n_models)
     n_items, n_models = S.shape
 
     def D(X: np.ndarray) -> np.ndarray:
@@ -37,15 +38,14 @@ def tailored_benchmarks_budgets(data: Data, budgets: Budgets, g_frac: float = 0.
         k = max(1, min(budget // n_models, n_items))
         k_g = max(1, round(k * g_frac))
 
-        # Phase 1: global G-set — K-Medoids on standardized item vectors (items × models)
+        # k-Medoids on standardized item vectors (items × models)
         g_set = _kmedoids(D(S), k_g)
 
         if k == k_g:
             results.append({m: [data[i]["scores"][m] for i in g_set] for m in models})
             continue
 
-        # Phase 2: per-model tailored N-set
-        # Find similar source models using pairwise distances on G-set scores
+        # per-model tailored N-set
         D_models = D(S[g_set].T)  # (n_models, n_models)
         threshold = D_models[np.triu_indices(n_models, k=1)].mean()
         n_src = max(1, min(int(np.mean((D_models <= threshold).sum(axis=1) - 1)), n_models - 1))

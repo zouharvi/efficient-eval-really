@@ -4,12 +4,13 @@ from efficient_eval_really.methods.tailored_benchmarks import _kmedoids
 
 
 def anchor_points_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
-    """Anchor Points (Vivek et al., 2024): K-Medoids on item correlation distance."""
+    """Anchor Points: K-Medoids on item correlation distance."""
     models = list(data[0]["scores"].keys())
-    S = np.array([[item["scores"][m] for m in models] for item in data])  # (n_items, n_models)
+    metric = next(iter(data[0]["scores_metrics"][models[0]]))
+    S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])  # (n_items, n_models)
     n_items, n_models = S.shape
 
-    # 1 - Pearson correlation as distance; zero-variance items (nan) treated as uncorrelated
+    
     with np.errstate(invalid="ignore"):
         D = 1 - np.nan_to_num(np.corrcoef(S), nan=0.0)
     np.fill_diagonal(D, 0.0)
