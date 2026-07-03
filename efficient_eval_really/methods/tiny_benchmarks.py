@@ -3,12 +3,12 @@ from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
 
 
 def _binarize(S: np.ndarray) -> np.ndarray:
-    """Binarize at threshold that preserves the overall mean."""
+    """binarize at threshold that preserves the overall mean."""
     return (S >= np.mean(S)).astype(float)
 
 
 def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
-    """K-Means clustering; return index of item nearest each centroid."""
+    """k-Means clustering; return index of item nearest each centroid."""
     from sklearn.cluster import KMeans
     from sklearn.metrics import pairwise_distances
     # TODO: hide warning messages
@@ -48,10 +48,11 @@ def tiny_benchmarks_budgets(data: Data, budgets: Budgets, method: str) -> ModelS
     """tinyBenchmarks item selection.
 
     method='clustering': K-Means on binarized response patterns.
-    method='irt':        K-Means on 2PL IRT (disc, diff) embeddings.
+    method='irt':        K-Means on 2PL IRT embeddings.
     """
     models = list(data[0]["scores"].keys())
-    S = np.array([[item["scores"][m] for m in models] for item in data])  # (n_items, n_models)
+    metric = next(iter(data[0]["scores_metrics"][models[0]]))
+    S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])  # (n_items, n_models)
     n_items, n_models = S.shape
 
     Y = _binarize(S)
