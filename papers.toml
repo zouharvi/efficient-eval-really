@@ -1,4 +1,18 @@
 [[papers]]
+Paper = "CollabEval: Statistically Efficient Collaborative Model Evaluation via Matrix Completion"
+Nickname = "CollabEval"
+Link = "https://arxiv.org/pdf/2607.05046"
+Problem = "model evaluation cost and statistical efficiency"
+Sequential = "no"
+Meta-evaluation = "mean squared error, confidence interval width, empirical coverage"
+Code = "not yet? or no. (can email them)"
+Critique = ""
+Source-only = "yes"
+Structured-items = "yes"
+Method = "Reframes generative AI model evaluation as a matrix completion task across a model-by-prompt score matrix. It uses cross-prediction-powered inference (CrossPPI) to turn imputed matrix scores into unbiased control variates, improving estimation accuracy and tightening confidence intervals without needing text generation or scoring for skipped prompts."
+Meta-goal = "Reduce computation and annotation budgets for LLM evaluation while maintaining statistical validity"
+
+[[papers]]
 Paper = "How to Select Datapoints for Efficient Human Evaluation of NLG Models?"
 Nickname = "subset2evaluate"
 Link = "https://aclanthology.org/2025.tacl-1.80.pdf"
