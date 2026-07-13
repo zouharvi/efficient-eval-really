@@ -71,7 +71,7 @@ load_data_synth_5models : Callable[..., Data] = functools.partial(load_data_synt
 load_data_synth_200models : Callable[..., Data] = functools.partial(load_data_synth, models=200, heteroscedastic=False)
 
 
-# TODO: some selector for src-based?
+# TODO: some selector for src-based? or maybe the method should return None if it isn't supported?
 # TODO: mark how many times the dataset should be run and averaged
 _DATA: dict[str, Callable[[], Data]] = {
     "Binary (s)": load_data_synth_binary,
