@@ -55,6 +55,7 @@ from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budget
 from efficient_eval_really.methods.feature_selection_regression import feature_selection_regression_budgets
 from efficient_eval_really.methods.lost_in_benchmarks import lost_in_benchmarks_budgets
 from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_correction
+from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_corrected
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -72,4 +73,6 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Lost in Benchmarks (PSN-IRT)": functools.partial(lost_in_benchmarks_budgets, method="psn"),
     "Lost in Benchmarks (4PL Baseline)": functools.partial(lost_in_benchmarks_budgets, method="4pl_baseline"),
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
+    "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
+    # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
 }
