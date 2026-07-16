@@ -12,13 +12,11 @@ def _fit_psn_irt(
     embed: int = 128,
     seed: int = 42,
 ):
-    """Fit PSN-IRT on binary matrix Y.
+    """Fit PSN-IRT.
 
-    Architecture :
-      model branch: Linear(n_models, hidden) -> ReLU -> Linear(hidden, embed) -> Linear(embed, 1) = theta
-      item  branch: Linear(n_items,  hidden) -> ReLU -> Linear(hidden, embed) -> Linear(embed, 4) = b, a, c_raw, d_raw
-    IRT Type: 4PL 
-    Loss: BCELoss on (model, item, outcome) triplets.
+    Architecture:
+      model_branch: Embedding(n_models, hidden) + bias -> ReLU -> Linear(hidden, embed) -> Linear(embed, 1) = theta
+      item_branch:  Embedding(n_items,  hidden) + bias -> ReLU -> Linear(hidden, embed) -> Linear(embed, 4) = b, a, c_raw, d_raw
 
     Returns arrays a, b, c, d (each shape (n_items,)) and scalar mean_theta.
     """
@@ -33,19 +31,22 @@ def _fit_psn_irt(
         def __init__(self):
             super().__init__()
 
-            # model branch: Embedding(id) replaces one-hot @ Linear — identical math, no large dense matmul
+            # Faithful equivalent of the original Linear(n_models, hidden) on one-hot input:
+            # Linear(n, h)(e_i) = W[:,i] + b  =  Embedding[i] + shared_bias
             self.model_embed = nn.Embedding(n_models, hidden)
+            self.model_bias = nn.Parameter(torch.zeros(hidden))
             self.model_net = nn.Sequential(nn.ReLU(), nn.Linear(hidden, embed))
             self.model_ability_out = nn.Linear(embed, 1)
 
-            # item branch
+            # item branch (same structure)
             self.item_embed = nn.Embedding(n_items, hidden)
+            self.item_bias = nn.Parameter(torch.zeros(hidden))
             self.item_net = nn.Sequential(nn.ReLU(), nn.Linear(hidden, embed))
             self.item_params_out = nn.Linear(embed, 4)  # b, a, c_raw, d_raw
 
         def forward(self, model_idx, item_idx):
-            theta = self.model_ability_out(self.model_net(self.model_embed(model_idx)))
-            raw = self.item_params_out(self.item_net(self.item_embed(item_idx)))
+            theta = self.model_ability_out(self.model_net(self.model_embed(model_idx) + self.model_bias))
+            raw = self.item_params_out(self.item_net(self.item_embed(item_idx) + self.item_bias))
             b = raw[:, 0:1]
             a = raw[:, 1:2]
             c = torch.sigmoid(raw[:, 2:3])
@@ -85,7 +86,7 @@ def _fit_psn_irt(
         for start in range(0, n_items, batch_size):
             end = min(start + batch_size, n_items)
             qid = torch.arange(start, end, dtype=torch.long, device=device)
-            raw = psn.item_params_out(psn.item_net(psn.item_embed(qid)))
+            raw = psn.item_params_out(psn.item_net(psn.item_embed(qid) + psn.item_bias))
             b_parts.append(raw[:, 0].cpu().numpy())
             a_parts.append(raw[:, 1].cpu().numpy())
             c_parts.append(torch.sigmoid(raw[:, 2]).cpu().numpy())
@@ -93,7 +94,7 @@ def _fit_psn_irt(
 
         # Mean model ability across all models
         all_model_idx = torch.arange(n_models, dtype=torch.long, device=device)
-        thetas = psn.model_ability_out(psn.model_net(psn.model_embed(all_model_idx))).squeeze().cpu().numpy()
+        thetas = psn.model_ability_out(psn.model_net(psn.model_embed(all_model_idx) + psn.model_bias)).squeeze().cpu().numpy()
 
     return (
         np.concatenate(a_parts),
@@ -112,12 +113,11 @@ def _fit_4pl_irt(Y: np.ndarray) -> tuple:
     eps = 1e-8
 
     mean_p = np.clip(Y.mean(axis=0), eps, 1 - eps)
-    # warm start: a=1, b=logit(mean_p), c~0.05, d~0.95, theta=0
     x0 = np.concatenate([
         np.ones(n_items),                            # a
         -np.log(mean_p / (1 - mean_p)),              # b
-        np.full(n_items, -3.0),                      # raw_c  (sigmoid -> ~0.05)
-        np.full(n_items, 3.0),                       # raw_d  (sigmoid -> ~0.95)
+        np.full(n_items, -3.0),                      # raw_c  
+        np.full(n_items, 3.0),                       # raw_d  
         np.zeros(n_models),                          # theta
     ])
 
@@ -155,7 +155,8 @@ def _fisher_select(
     mean_theta: float,
 ) -> ModelScoresAtBudget:
     """Rank items by 4PL Fisher information and return scores."""
-    P = c + (d - c) / (1.0 + np.exp(-a * (mean_theta - b)))
+    a, b, c, d = a.astype(np.float64), b.astype(np.float64), c.astype(np.float64), d.astype(np.float64)
+    P = c + (d - c) / (1.0 + np.exp(np.clip(-a * (mean_theta - b), -500, 500)))
     P = np.clip(P, 1e-6, 1 - 1e-6)
     d_minus_c = np.clip(d - c, 1e-6, None)
     # high a and P near middle -> high Fisher info
@@ -179,7 +180,7 @@ def _prepare_training_matrix(data: Data, models: list) -> tuple:
     S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])
     n_items, n_models = S.shape
     Y = _binarize(S)  # (n_items, n_models)
-    return Y.T, n_items, n_models   # Y.T is (n_models, n_items)
+    return Y.T, n_items, n_models   
 
 
 def lost_in_benchmarks_budgets(data: Data, budgets: Budgets, method: str) -> ModelScoresAtBudget:
