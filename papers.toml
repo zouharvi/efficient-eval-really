@@ -85,7 +85,7 @@ Meta-goal = "Optimal human-label allocation in LLM-augmented surveys"
 [[papers]]
 Paper = "Stop Guessing When to Stop Testing: Efficient Model Evaluation with Just Enough Data"
 Nickname = "just_enough_data"
-Link = "https://openreview.net/forum?id=dIiV9FYt3i"
+Link = "https://aclanthology.org/2026.findings-acl.43.pdf"
 Problem = "item selection"
 Sequential = "yes"
 Meta-evaluation = "statistical significance, confidence intervals"
