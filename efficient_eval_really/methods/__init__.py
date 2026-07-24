@@ -54,7 +54,8 @@ from efficient_eval_really.methods.anchor_points import anchor_points_budgets
 from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
 from efficient_eval_really.methods.feature_selection_regression import feature_selection_regression_budgets
 from efficient_eval_really.methods.lost_in_benchmarks import lost_in_benchmarks_budgets
-from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_correction
+from efficient_eval_really.methods.neyman_allocation import neyman_allocation_budgets
+from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_corrected
 from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_corrected
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
@@ -72,6 +73,9 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "mRMR": feature_selection_regression_budgets,
     "Lost in Benchmarks (PSN-IRT)": functools.partial(lost_in_benchmarks_budgets, method="psn"),
     "Lost in Benchmarks (4PL Baseline)": functools.partial(lost_in_benchmarks_budgets, method="4pl_baseline"),
+    "Neyman Allocation (proxy)": functools.partial(neyman_allocation_budgets, method="proxy"),
+    "Neyman Allocation (oracle)": functools.partial(neyman_allocation_budgets, method="oracle"),
+    "Neyman Allocation (proportional)": functools.partial(neyman_allocation_budgets, method="proportional"),
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
     # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
