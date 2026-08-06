@@ -769,20 +769,6 @@ Method = "Formally defines and approximates the subset selection problem for eff
 Meta-goal = "Efficient benchmarking via bias-bounded subset selection"
 
 [[papers]]
-Paper = "Active Testing: Sample–Efficient Model Evaluation"
-Nickname = "active_testing"
-Link = "https://proceedings.mlr.press/v139/kossen21a/kossen21a.pdf"
-Problem = "item selection"
-Sequential = "yes"
-Meta-evaluation = "median squared error, relative labeling cost"
-Code = "https://github.com/jlko/active-testing"
-Critique = "Duplicate entry of 'Active Testing: Sample-Efficient Model Evaluation'."
-Source-only = "no"
-Structured-items = "yes"
-Method = "Carefully selects test points to label using theoretically-grounded acquisition strategies tailored to active testing, with bias correction and variance reduction."
-Meta-goal = "Sample-efficient model evaluation"
-
-[[papers]]
 Paper = "Active Evaluation Acquisition for Efficient LLM Benchmarking"
 Nickname = "active_eval_acquisition"
 Link = "https://openreview.net/pdf?id=EHqQaBYYlE"
