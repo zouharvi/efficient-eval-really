@@ -1,10 +1,6 @@
-from __future__ import annotations
 import math
-from typing import TYPE_CHECKING
 import numpy as np
-
-if TYPE_CHECKING:
-    from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
+from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
 
 
 def optimal_eval_efficiency_budgets(
