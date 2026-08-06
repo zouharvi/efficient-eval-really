@@ -55,6 +55,7 @@ from efficient_eval_really.methods.feature_selection_regression import feature_s
 from efficient_eval_really.methods.lost_in_benchmarks import lost_in_benchmarks_budgets
 from efficient_eval_really.methods.neyman_allocation import neyman_allocation_budgets
 from efficient_eval_really.methods.optimal_eval_efficiency import optimal_eval_efficiency_budgets
+from efficient_eval_really.methods.irt_chatbots import irt_chatbots_budgets
 from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_corrected
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
@@ -76,6 +77,7 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Neyman Allocation (oracle)": functools.partial(neyman_allocation_budgets, method="oracle"),
     "Neyman Allocation (proportional)": functools.partial(neyman_allocation_budgets, method="proportional"),
     "Optimal Eval Efficiency": optimal_eval_efficiency_budgets,
+    "IRT Chatbots": irt_chatbots_budgets,
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
     # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
