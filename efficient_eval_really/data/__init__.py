@@ -5,7 +5,7 @@ from efficient_eval_really.methods import Data
 
 
 def load_data_synth(
-    seed=0, models=20, items=500, heteroscedastic=False, bins=None,
+    seed=0, models=20, items=500, heteroscedastic=False, bins=None, embedding_dim=64,
 ) -> Data:
     import numpy as np
 
@@ -15,6 +15,9 @@ def load_data_synth(
     items_latent = random.normal(loc=0, scale=1, size=items)
 
     model_latent_mean = np.mean(models_latent)
+
+    # Fixed random projection matrix for generating synthetic item embeddings
+    W = random.normal(size=(models, embedding_dim))
 
     data_out: Data = []
     for item_latent in items_latent:
@@ -31,7 +34,13 @@ def load_data_synth(
                 score = bins[np.argmin(np.abs(bins - score))]
             scores_dict[f"model_{model_i + 1}"] = float(score)
             scores_metric_dict[f"model_{model_i + 1}"] = {"metric": float(np.clip(score + random.normal(loc=0, scale=0.05), 0, 1))}
-        data_out.append({"scores": scores_dict, "scores_metrics": scores_metric_dict, "cost": 1, "domain": "synth"})
+
+        score_vec = np.array([scores_dict[f"model_{model_i + 1}"] for model_i in range(models)], dtype=float)
+        emb = score_vec @ W + random.normal(scale=0.05, size=embedding_dim)
+        emb_norm = float(np.linalg.norm(emb))
+        emb = (emb / (emb_norm if emb_norm > 0 else 1.0)).tolist()
+
+        data_out.append({"scores": scores_dict, "scores_metrics": scores_metric_dict, "cost": 1, "embedding": emb, "domain": "synth"})
     return data_out
 
 def load_data_subset2evaluate_translation():

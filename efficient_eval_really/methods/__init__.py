@@ -11,6 +11,7 @@ class DataItem(TypedDict):
     scores: dict[Model, float]
     scores_metrics: dict[str, dict[Model, float]]
     cost: float
+    embedding: NotRequired[list[float]]
     src: NotRequired[str]
     tgt: NotRequired[dict[Model, str]]
     domain: NotRequired[str]
