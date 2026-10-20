@@ -146,6 +146,7 @@ Meta-goal = "Predicting LLM per-instance success from few evaluations"
 [[papers]]
 Paper = "Scales++: Compute Efficient Evaluation Subset Selection"
 Nickname = "scales_plus_plus"
+Implemented = true
 Link = "https://arxiv.org/abs/2510.26384"
 Problem = "item selection"
 Sequential = "no"
@@ -188,6 +189,7 @@ Meta-goal = "Active model selection of LLMs"
 [[papers]]
 Paper = "Label-Efficient Model Selection for Text Generation (DiffUse)"
 Nickname = "diffuse"
+Implemented = true
 Link = "https://aclanthology.org/2024.acl-long.456.pdf"
 Problem = "item selection"
 Sequential = "yes"
@@ -349,6 +351,7 @@ Meta-goal = "Budget-constrained best model identification"
 [[papers]]
 Paper = "Select, Label, Evaluate: Active Testing in NLP"
 Nickname = "select_label_evaluate"
+Implemented = true
 Link = "https://arxiv.org/pdf/2603.21840"
 Problem = "item selection"
 Sequential = "yes"
@@ -760,6 +763,7 @@ Meta-goal = "Efficient evaluation of LLMs by sparse optimization"
 [[papers]]
 Paper = "Improving Model Evaluation using SMART Filtering of Benchmark Datasets"
 Nickname = "smart_filtering"
+Implemented = true
 Link = "https://aclanthology.org/2025.naacl-long.235.pdf"
 Problem = "item selection"
 Sequential = "no"

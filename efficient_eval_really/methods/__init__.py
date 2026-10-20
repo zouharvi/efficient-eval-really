@@ -83,6 +83,10 @@ from efficient_eval_really.methods.tailored_benchmarks import (
 )
 from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
 from efficient_eval_really.methods.valid_best_model import valid_best_model_budgets
+from efficient_eval_really.methods.scales_plus_plus import scales_plus_plus_budgets
+from efficient_eval_really.methods.smart_filtering import smart_filtering_budgets
+from efficient_eval_really.methods.diffuse import diffuse_budgets
+from efficient_eval_really.methods.select_label_evaluate import select_label_evaluate_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -114,6 +118,10 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Bias Bounded (Submodular)": bias_bounded_budgets,
     "IQ Test for LLMs (Factor Analysis)": iq_test_llms_budgets,
     "Thompson Sampling (APIs)": efficient_benchmarking_apis_budgets,
+    "Scales++": scales_plus_plus_budgets,
+    "SMART Filtering": smart_filtering_budgets,
+    "DiffUse": diffuse_budgets,
+    "Select Label Evaluate": select_label_evaluate_budgets,
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
     # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
