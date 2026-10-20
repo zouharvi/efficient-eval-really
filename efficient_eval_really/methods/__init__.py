@@ -91,6 +91,8 @@ from efficient_eval_really.methods.sparseeval import sparseeval_budgets
 from efficient_eval_really.methods.cost_aware_gittins import cost_aware_gittins_budgets
 from efficient_eval_really.methods.cost_efficient_estimation import cost_efficient_estimation_budgets
 from efficient_eval_really.methods.faq import faq_budgets
+from efficient_eval_really.methods.arena_lite import arena_lite_budgets
+from efficient_eval_really.methods.adaptive_arena import adaptive_arena_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -130,6 +132,9 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Cost-Aware Gittins": cost_aware_gittins_budgets,
     "Cost-Efficient Estimation (OED)": cost_efficient_estimation_budgets,
     "FAQ": faq_budgets,
+    "Arena-Lite": arena_lite_budgets,
+    "Adaptive-Arena": adaptive_arena_budgets,
+    "Adaptive-Arena (A-optimality)": adaptive_arena_budgets,
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
     # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
