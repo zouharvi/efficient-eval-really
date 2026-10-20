@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import statistics
+import time
 
 import numpy as np
 import tqdm
@@ -47,7 +48,11 @@ for method_name, method_fn in efficient_eval_really.methods.METHODS_BUDGETS.item
 # do the computation
 def _my_compute_function_coz_lambdas_dont_pickle(x):
     method_name, method_fn, data_name, data, budgets, model_scores_all = x
-    return (method_name, method_fn(data, budgets), data_name, model_scores_all, budgets)
+    t0 = time.perf_counter()
+    model_scores_subset_at_budgets = method_fn(data, budgets)
+    runtime = time.perf_counter() - t0
+    runtime_avg = runtime / len(budgets) if budgets else runtime
+    return (method_name, model_scores_subset_at_budgets, data_name, model_scores_all, budgets, runtime_avg)
 if args.workers > 0:
     import multiprocessing
     with multiprocessing.Pool(args.workers) as pool:
@@ -62,7 +67,7 @@ else:
     ]
 
 # collate the results
-for method_name, model_scores_subset_at_budgets, data_name, model_scores_all, budgets in tqdm.tqdm(results):
+for method_name, model_scores_subset_at_budgets, data_name, model_scores_all, budgets, runtime_avg in tqdm.tqdm(results):
     results_local = []
     for budget, model_scores_subset_at_budget in zip(budgets, model_scores_subset_at_budgets):
         results_local.append(efficient_eval_really.utils.meta_evaluate_scores_subset(model_scores_subset_at_budget, model_scores_all))
@@ -70,6 +75,7 @@ for method_name, model_scores_subset_at_budgets, data_name, model_scores_all, bu
     results_out[method_name][data_name] = {}
     for key in results_local[0]:
         results_out[method_name][data_name][key] = statistics.mean([result[key] for result in results_local])
+    results_out[method_name][data_name]["runtime"] = runtime_avg
 
 with open("computed/01-results_all.json", "w") as f:
     json.dump(results_out, f, indent=2)
