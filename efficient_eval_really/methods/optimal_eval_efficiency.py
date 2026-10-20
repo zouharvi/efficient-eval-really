@@ -1,6 +1,8 @@
 import math
+
 import numpy as np
-from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
+
+from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
 def optimal_eval_efficiency_budgets(

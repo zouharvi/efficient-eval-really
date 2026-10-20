@@ -1,5 +1,13 @@
-from efficient_eval_really.methods import Data, Budget, Budgets, ModelScoresSubset, ModelScoresAtBudget
 import evaluation_bandit.algorithms
+
+from efficient_eval_really.methods import (
+    Budget,
+    Budgets,
+    Data,
+    ModelScoresAtBudget,
+    ModelScoresSubset,
+)
+
 
 def evaluation_bandit_to_ours(data: Data, budget: Budget, method: str, **kwargs) -> ModelScoresSubset:
     if method == "upper_confidence_bound":

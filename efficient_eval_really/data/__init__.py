@@ -1,6 +1,8 @@
 import functools
+from collections.abc import Callable
+
 from efficient_eval_really.methods import Data
-from typing import Callable
+
 
 def load_data_synth(
     seed=0, models=20, items=500, heteroscedastic=False, bins=None,

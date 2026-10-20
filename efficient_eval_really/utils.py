@@ -1,6 +1,8 @@
 import numpy as np
-from efficient_eval_really.methods import ModelScores, ModelScoresSubset
 import scipy.stats
+
+from efficient_eval_really.methods import ModelScores, ModelScoresSubset
+
 
 def meta_evaluate_scores_subset(model_scores: ModelScoresSubset, model_scores_all: ModelScores) -> float:
     # for now just simple spearman ranking

@@ -1,12 +1,14 @@
+import argparse
+import json
 import os
 import statistics
-import efficient_eval_really.utils
-import efficient_eval_really.methods
-from efficient_eval_really.data import get_data_dict_all
+
 import numpy as np
-import json
 import tqdm
-import argparse
+
+import efficient_eval_really.methods
+import efficient_eval_really.utils
+from efficient_eval_really.data import get_data_dict_all
 
 args = argparse.ArgumentParser()
 args.add_argument("--no-reuse", action="store_true", help="Don't reuse results from computed/01-results_all.json even if it exists")
@@ -66,7 +68,7 @@ for method_name, model_scores_subset_at_budgets, data_name, model_scores_all, bu
         results_local.append(efficient_eval_really.utils.meta_evaluate_scores_subset(model_scores_subset_at_budget, model_scores_all))
 
     results_out[method_name][data_name] = {}
-    for key in results_local[0].keys():
+    for key in results_local[0]:
         results_out[method_name][data_name][key] = statistics.mean([result[key] for result in results_local])
 
 with open("computed/01-results_all.json", "w") as f:

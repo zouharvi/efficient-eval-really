@@ -41,3 +41,8 @@ build-backend = "setuptools.build_meta"
 
 [tool.ruff.lint]
 ignore = ["E402", "E731", "F401"]
+
+
+# just run "pyright"
+[tool.pyright]
+include = ["efficient_eval_really", "scripts"]

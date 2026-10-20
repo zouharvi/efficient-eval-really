@@ -1,6 +1,15 @@
-import subset2evaluate.select_subset
-from efficient_eval_really.methods import Data, Budget, Budgets, ModelScoresSubset, ModelScoresAtBudget
 import copy
+
+import subset2evaluate.select_subset
+
+from efficient_eval_really.methods import (
+    Budget,
+    Budgets,
+    Data,
+    ModelScoresAtBudget,
+    ModelScoresSubset,
+)
+
 
 def subset2evaluate_to_ours_budgets(data: Data, budgets: Budgets, method: str, **kwargs) -> ModelScoresAtBudget:
     data = copy.deepcopy(data)

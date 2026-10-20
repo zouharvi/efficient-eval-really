@@ -1,6 +1,6 @@
-from typing import Callable, TypedDict, NotRequired, Union
 import functools
-
+from collections.abc import Callable
+from typing import NotRequired, TypedDict, Union
 
 Model = str
 BudgetFrac = float
@@ -46,17 +46,30 @@ def fn(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
 
 
 # define all methods
-from efficient_eval_really.methods.subset2evaluate import subset2evaluate_to_ours_budgets
-from efficient_eval_really.methods.evaluation_bandit import evaluation_bandit_to_ours_budgets
-from efficient_eval_really.methods.tailored_benchmarks import tailored_benchmarks_budgets
 from efficient_eval_really.methods.anchor_points import anchor_points_budgets
-from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
-from efficient_eval_really.methods.feature_selection_regression import feature_selection_regression_budgets
+from efficient_eval_really.methods.custom import (
+    weighted_sampling_with_priors,
+    weighted_sampling_with_priors_corrected,
+)
+from efficient_eval_really.methods.evaluation_bandit import (
+    evaluation_bandit_to_ours_budgets,
+)
+from efficient_eval_really.methods.feature_selection_regression import (
+    feature_selection_regression_budgets,
+)
+from efficient_eval_really.methods.irt_chatbots import irt_chatbots_budgets
 from efficient_eval_really.methods.lost_in_benchmarks import lost_in_benchmarks_budgets
 from efficient_eval_really.methods.neyman_allocation import neyman_allocation_budgets
-from efficient_eval_really.methods.optimal_eval_efficiency import optimal_eval_efficiency_budgets
-from efficient_eval_really.methods.irt_chatbots import irt_chatbots_budgets
-from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_corrected
+from efficient_eval_really.methods.optimal_eval_efficiency import (
+    optimal_eval_efficiency_budgets,
+)
+from efficient_eval_really.methods.subset2evaluate import (
+    subset2evaluate_to_ours_budgets,
+)
+from efficient_eval_really.methods.tailored_benchmarks import (
+    tailored_benchmarks_budgets,
+)
+from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),

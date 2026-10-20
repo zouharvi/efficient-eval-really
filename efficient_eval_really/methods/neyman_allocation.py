@@ -1,5 +1,6 @@
 import numpy as np
-from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
+
+from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
 def neyman_allocation_budgets(

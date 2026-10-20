@@ -2,14 +2,13 @@ import random
 from typing import Literal
 
 import numpy as np
-from scipy.special import psi
 from scipy.spatial import cKDTree
+from scipy.special import psi
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import RidgeCV
 from sklearn.model_selection import GridSearchCV, LeaveOneOut
 
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
-
 
 Method = Literal["mid", "miq", "relevance"]
 Regressor = Literal["ridge", "kernel_ridge"] | None
@@ -364,8 +363,7 @@ class MRMRPred:
             self
         """
         _, num_data = source_full_scores.shape
-        if num_data <= coreset_size:
-            coreset_size = num_data
+        coreset_size = min(num_data, coreset_size)
 
         random.seed(seed)
         np.random.seed(seed)

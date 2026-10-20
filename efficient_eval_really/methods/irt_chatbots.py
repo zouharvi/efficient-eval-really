@@ -1,5 +1,6 @@
 import numpy as np
-from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
+
+from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
 def _fit_2pl_irt(Y: np.ndarray) -> tuple:
@@ -43,7 +44,7 @@ def irt_chatbots_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
 
     c = np.mean(S)  # threshold: proxy for the paper's c
     Y = (S >= c).astype(float).T  # (n_models, n_items)
-    a, b, theta = _fit_2pl_irt(Y)
+    a, _b, _theta = _fit_2pl_irt(Y)
     order = np.argsort(a)[::-1]  # descending discrimination
 
     results: ModelScoresAtBudget = []

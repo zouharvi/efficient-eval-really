@@ -1,7 +1,9 @@
-from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
-from typing import Callable
 import random
 import statistics
+from collections.abc import Callable
+
+from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
+
 
 def weighted_sampling_with_priors(data: Data, budgets: Budgets, gamma: float = 0.95, coldstart=5) -> ModelScoresAtBudget:
     """

@@ -1,5 +1,6 @@
 import numpy as np
-from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
+
+from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 from efficient_eval_really.methods.tiny_benchmarks import _binarize
 
 
@@ -21,7 +22,7 @@ def _fit_psn_irt(
     Returns arrays a, b, c, d (each shape (n_items,)) and scalar mean_theta.
     """
     import torch
-    import torch.nn as nn
+    from torch import nn
 
     torch.manual_seed(seed)
     n_models, n_items = Y.shape

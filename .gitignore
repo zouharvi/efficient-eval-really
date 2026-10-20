@@ -1,4 +1,6 @@
 # Custom
+test.py
+typst/
 .vscode
 computed/
 environment.yml

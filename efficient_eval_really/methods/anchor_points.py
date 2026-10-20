@@ -1,5 +1,6 @@
 import numpy as np
-from efficient_eval_really.methods import Data, Budgets, ModelScoresAtBudget
+
+from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 from efficient_eval_really.methods.tailored_benchmarks import _kmedoids
 
 
