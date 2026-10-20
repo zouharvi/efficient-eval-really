@@ -10,11 +10,15 @@ def _binarize(S: np.ndarray) -> np.ndarray:
 
 def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
     """k-Means clustering; return index of item nearest each centroid."""
+    import warnings
     from sklearn.cluster import KMeans
+    from sklearn.exceptions import ConvergenceWarning
     from sklearn.metrics import pairwise_distances
-    # TODO: hide warning messages
-    kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
-    kmeans.fit(X)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=ConvergenceWarning)
+        kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
+        kmeans.fit(X)
     return pairwise_distances(kmeans.cluster_centers_, X).argmin(axis=1).tolist()
 
 

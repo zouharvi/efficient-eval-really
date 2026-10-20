@@ -49,8 +49,13 @@ def scales_plus_plus_budgets(
             results.append({m: [float(item["scores"][m]) for item in data] for m in models})
             continue
 
-        kmeans = KMeans(n_clusters=k, random_state=seed, n_init="auto")
-        kmeans.fit(X)
+        import warnings
+        from sklearn.exceptions import ConvergenceWarning
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=ConvergenceWarning)
+            kmeans = KMeans(n_clusters=k, random_state=seed, n_init="auto")
+            kmeans.fit(X)
 
         centers = kmeans.cluster_centers_  # (k, d)
         # Pairwise distance from all items to each center: (n_items, k)

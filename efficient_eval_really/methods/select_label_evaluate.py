@@ -41,8 +41,13 @@ def select_label_evaluate_budgets(
             results.append({m: [float(item["scores"][m]) for item in data] for m in models})
             continue
 
-        kmeans = KMeans(n_clusters=k, random_state=seed, n_init="auto")
-        labels = kmeans.fit_predict(embeddings)
+        import warnings
+        from sklearn.exceptions import ConvergenceWarning
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=ConvergenceWarning)
+            kmeans = KMeans(n_clusters=k, random_state=seed, n_init="auto")
+            labels = kmeans.fit_predict(embeddings)
 
         coreset: list[int] = []
         for c in range(k):
