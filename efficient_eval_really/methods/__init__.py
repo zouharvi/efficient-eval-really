@@ -87,6 +87,10 @@ from efficient_eval_really.methods.scales_plus_plus import scales_plus_plus_budg
 from efficient_eval_really.methods.smart_filtering import smart_filtering_budgets
 from efficient_eval_really.methods.diffuse import diffuse_budgets
 from efficient_eval_really.methods.select_label_evaluate import select_label_evaluate_budgets
+from efficient_eval_really.methods.sparseeval import sparseeval_budgets
+from efficient_eval_really.methods.cost_aware_gittins import cost_aware_gittins_budgets
+from efficient_eval_really.methods.cost_efficient_estimation import cost_efficient_estimation_budgets
+from efficient_eval_really.methods.faq import faq_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -122,6 +126,10 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "SMART Filtering": smart_filtering_budgets,
     "DiffUse": diffuse_budgets,
     "Select Label Evaluate": select_label_evaluate_budgets,
+    "SparseEval": sparseeval_budgets,
+    "Cost-Aware Gittins": cost_aware_gittins_budgets,
+    "Cost-Efficient Estimation (OED)": cost_efficient_estimation_budgets,
+    "FAQ": faq_budgets,
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
     # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
