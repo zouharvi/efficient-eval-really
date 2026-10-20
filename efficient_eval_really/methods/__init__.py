@@ -46,10 +46,17 @@ def fn(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
 
 
 # define all methods
+from efficient_eval_really.methods.active_testing import active_testing_budgets
 from efficient_eval_really.methods.anchor_points import anchor_points_budgets
+from efficient_eval_really.methods.atlas import atlas_budgets
+from efficient_eval_really.methods.bias_bounded import bias_bounded_budgets
+from efficient_eval_really.methods.confident_rankings import confident_rankings_budgets
 from efficient_eval_really.methods.custom import (
     weighted_sampling_with_priors,
     weighted_sampling_with_priors_corrected,
+)
+from efficient_eval_really.methods.efficient_benchmarking_apis import (
+    efficient_benchmarking_apis_budgets,
 )
 from efficient_eval_really.methods.evaluation_bandit import (
     evaluation_bandit_to_ours_budgets,
@@ -57,8 +64,11 @@ from efficient_eval_really.methods.evaluation_bandit import (
 from efficient_eval_really.methods.feature_selection_regression import (
     feature_selection_regression_budgets,
 )
+from efficient_eval_really.methods.iq_test_llms import iq_test_llms_budgets
 from efficient_eval_really.methods.irt_chatbots import irt_chatbots_budgets
+from efficient_eval_really.methods.just_enough_data import just_enough_data_budgets
 from efficient_eval_really.methods.lost_in_benchmarks import lost_in_benchmarks_budgets
+from efficient_eval_really.methods.misses_the_mark import misses_the_mark_budgets
 from efficient_eval_really.methods.neyman_allocation import neyman_allocation_budgets
 from efficient_eval_really.methods.optimal_eval_efficiency import (
     optimal_eval_efficiency_budgets,
@@ -66,10 +76,12 @@ from efficient_eval_really.methods.optimal_eval_efficiency import (
 from efficient_eval_really.methods.subset2evaluate import (
     subset2evaluate_to_ours_budgets,
 )
+from efficient_eval_really.methods.syrs_bandit import syrs_bandit_budgets
 from efficient_eval_really.methods.tailored_benchmarks import (
     tailored_benchmarks_budgets,
 )
 from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
+from efficient_eval_really.methods.valid_best_model import valid_best_model_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -91,6 +103,16 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Neyman Allocation (proportional)": functools.partial(neyman_allocation_budgets, method="proportional"),
     "Optimal Eval Efficiency": optimal_eval_efficiency_budgets,
     "IRT Chatbots": irt_chatbots_budgets,
+    "SySRs Bandit": syrs_bandit_budgets,
+    "Active Testing (LURE)": active_testing_budgets,
+    "ATLAS (CAT)": atlas_budgets,
+    "Just Enough Data (GST)": just_enough_data_budgets,
+    "Misses the Mark (AIPW)": misses_the_mark_budgets,
+    "Confident Rankings (Continuous CAT)": confident_rankings_budgets,
+    "Valid Best Model (PULSE)": valid_best_model_budgets,
+    "Bias Bounded (Submodular)": bias_bounded_budgets,
+    "IQ Test for LLMs (Factor Analysis)": iq_test_llms_budgets,
+    "Thompson Sampling (APIs)": efficient_benchmarking_apis_budgets,
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
     # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
