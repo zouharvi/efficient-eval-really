@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import stats
+from scipy.special import ndtr
 
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 from efficient_eval_really.methods.irt_chatbots import _fit_2pl_irt
@@ -25,6 +25,7 @@ def confident_rankings_budgets(
     """
     models = list(data[0]["scores"].keys())
     metric = next(iter(data[0]["scores_metrics"][models[0]]))
+    n_models = len(models)
     n_items = len(data)
 
     S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data], dtype=float)
@@ -35,86 +36,105 @@ def confident_rankings_budgets(
     a = np.clip(np.nan_to_num(a, nan=1.0), 0.1, 5.0)
     b = np.clip(np.nan_to_num(b, nan=0.0), -5.0, 5.0)
 
-    results: ModelScoresAtBudget = []
-    for budget in budgets:
-        model_scores = {m: [] for m in models}
-        used_items = {m: set() for m in models}
-        thetas = {m: 0.0 for m in models}
-        se = {m: 1.0 for m in models}
-        cost = 0.0
+    # Pre-extract scores and costs as 2D numpy arrays for fast indexing: (n_items, n_models)
+    scores_mat = np.array([[item["scores"][m] for m in models] for item in data], dtype=float)
+    costs_arr = np.array([item["cost"] for item in data], dtype=float)
 
-        # Phase 1: Warm-up
-        warmup_k = min(max(2, n_init), n_items)
-        p_0 = 1.0 / (1.0 + np.exp(a * b))
-        fisher_0 = (a ** 2) * p_0 * (1.0 - p_0)
-        top_warmup = np.argsort(fisher_0)[::-1][:warmup_k]
+    # State tracking
+    model_scores = [[] for _ in range(n_models)]
+    used_mask = np.zeros((n_models, n_items), dtype=bool)
+    counts = np.zeros(n_models, dtype=int)
+    sums = np.zeros(n_models, dtype=float)
+    sum_sqs = np.zeros(n_models, dtype=float)
+    thetas = np.zeros(n_models, dtype=float)
+    se = np.ones(n_models, dtype=float)
+    cost = 0.0
 
-        for m in models:
-            for idx in top_warmup:
-                score = float(data[idx]["scores"][m])
-                model_scores[m].append(score)
-                used_items[m].add(int(idx))
-                cost += data[idx]["cost"]
-            thetas[m] = float(np.mean(model_scores[m]))
-            se[m] = (
-                float(np.std(model_scores[m], ddof=1) / np.sqrt(len(model_scores[m])))
-                if len(model_scores[m]) > 1
-                else 0.5
-            )
+    # Phase 1: Warm-up
+    warmup_k = min(max(2, n_init), n_items)
+    p_0 = 1.0 / (1.0 + np.exp(a * b))
+    fisher_0 = (a ** 2) * p_0 * (1.0 - p_0)
+    top_warmup = np.argsort(fisher_0)[::-1][:warmup_k]
 
-        # Phase 2: Adaptive selection
+    for m_idx in range(n_models):
+        for idx in top_warmup:
+            sc = scores_mat[idx, m_idx]
+            model_scores[m_idx].append(sc)
+            used_mask[m_idx, idx] = True
+            counts[m_idx] += 1
+            sums[m_idx] += sc
+            sum_sqs[m_idx] += sc * sc
+            cost += costs_arr[idx]
+
+        thetas[m_idx] = sums[m_idx] / counts[m_idx]
+        if counts[m_idx] > 1:
+            var = max(1e-8, (sum_sqs[m_idx] - (sums[m_idx] ** 2) / counts[m_idx]) / (counts[m_idx] - 1))
+            se[m_idx] = np.sqrt(var / counts[m_idx])
+        else:
+            se[m_idx] = 0.5
+
+    # Incremental simulation across sorted budgets
+    results_map = {}
+    sorted_budgets = sorted(set(budgets))
+
+    for budget in sorted_budgets:
         while cost < budget:
-            sorted_models = sorted(models, key=lambda m: thetas[m], reverse=True)
-            uncertain_pairs = []
-            for i in range(len(sorted_models) - 1):
-                m_a, m_b = sorted_models[i], sorted_models[i + 1]
-                if len(used_items[m_a]) >= n_items and len(used_items[m_b]) >= n_items:
-                    continue
-                diff = thetas[m_a] - thetas[m_b]
-                denom = np.sqrt(se[m_a] ** 2 + se[m_b] ** 2)
-                p_a_gt_b = stats.norm.cdf(diff / max(1e-8, denom))
-                if 1.0 - confidence < p_a_gt_b < confidence:
-                    uncertain_pairs.append((m_a, m_b))
+            order = np.argsort(-thetas)
 
-            if not uncertain_pairs:
+            # Vectorized adjacent pair uncertainty check using C-level standard normal CDF
+            diffs = thetas[order[:-1]] - thetas[order[1:]]
+            denoms = np.sqrt(se[order[:-1]] ** 2 + se[order[1:]] ** 2)
+            probs = ndtr(diffs / np.maximum(1e-8, denoms))
+            uncertain = (probs > 1.0 - confidence) & (probs < confidence)
+
+            if not np.any(uncertain):
                 break
 
-            candidates = set()
-            for m_a, m_b in uncertain_pairs:
-                if len(used_items[m_a]) < n_items:
-                    candidates.add(m_a)
-                if len(used_items[m_b]) < n_items:
-                    candidates.add(m_b)
+            # Models involved in uncertain pairs that still have available items
+            unc_pairs = np.where(uncertain)[0]
+            cand_left = order[unc_pairs]
+            cand_right = order[unc_pairs + 1]
+            candidates = np.unique(np.concatenate([cand_left, cand_right]))
+            candidates = [m for m in candidates if counts[m] < n_items]
 
             if not candidates:
                 break
 
-            target_model = max(
-                candidates,
-                key=lambda m: (se[m] ** 2) / (len(model_scores[m]) + 1.0),
-            )
+            # Target model selection: max SE^2 / (n + 1)
+            cand_arr = np.array(candidates, dtype=int)
+            marginal_var = (se[cand_arr] ** 2) / (counts[cand_arr] + 1.0)
+            target_m = cand_arr[np.argmax(marginal_var)]
 
-            available = [idx for idx in range(n_items) if idx not in used_items[target_model]]
-            if not available:
+            # Available items for target_m
+            av_items = np.where(~used_mask[target_m])[0]
+            if len(av_items) == 0:
                 break
-            av_arr = np.array(available, dtype=int)
-            logits = a[av_arr] * (thetas[target_model] - b[av_arr])
+
+            # Fisher information selection
+            a_av = a[av_items]
+            b_av = b[av_items]
+            logits = a_av * (thetas[target_m] - b_av)
             p = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
-            fisher = (a[av_arr] ** 2) * p * (1.0 - p)
-            best_item = int(av_arr[np.argmax(fisher)])
+            fisher = (a_av ** 2) * p * (1.0 - p)
+            best_item = av_items[np.argmax(fisher)]
 
-            score = float(data[best_item]["scores"][target_model])
-            model_scores[target_model].append(score)
-            used_items[target_model].add(best_item)
-            cost += data[best_item]["cost"]
+            # Administer item
+            sc = scores_mat[best_item, target_m]
+            model_scores[target_m].append(sc)
+            used_mask[target_m, best_item] = True
+            counts[target_m] += 1
+            sums[target_m] += sc
+            sum_sqs[target_m] += sc * sc
+            cost += costs_arr[best_item]
 
-            thetas[target_model] = float(np.mean(model_scores[target_model]))
-            se[target_model] = (
-                float(np.std(model_scores[target_model], ddof=1) / np.sqrt(len(model_scores[target_model])))
-                if len(model_scores[target_model]) > 1
-                else 0.5
-            )
+            thetas[target_m] = sums[target_m] / counts[target_m]
+            if counts[target_m] > 1:
+                var = max(1e-8, (sum_sqs[target_m] - (sums[target_m] ** 2) / counts[target_m]) / (counts[target_m] - 1))
+                se[target_m] = np.sqrt(var / counts[target_m])
+            else:
+                se[target_m] = 0.5
 
-        results.append(model_scores)
+        # Snapshot for this budget level
+        results_map[budget] = {models[i]: list(model_scores[i]) for i in range(n_models)}
 
-    return results
+    return [results_map[b] for b in budgets]

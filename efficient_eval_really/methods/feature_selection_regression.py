@@ -528,18 +528,21 @@ def feature_selection_regression_budgets(
     n_models = len(models)
     n_items = len(data)
 
-    results: ModelScoresAtBudget = []
-    for budget in budgets:
-        coreset_size = max(1, min(budget // n_models, n_items))
-        predictor = MRMRPred(
-            method=method,
-            regressor=regressor,
-            binary_mi_k=binary_mi_k,
-            continuous_mi_k=continuous_mi_k,
-            kernel_degree=kernel_degree,
-        ).fit(metric_scores, coreset_size=coreset_size, seed=seed)
+    coreset_sizes = [max(1, min(budget // n_models, n_items)) for budget in budgets]
+    max_coreset_size = max(coreset_sizes)
 
-        coreset = predictor.get_coreset()
+    predictor = MRMRPred(
+        method=method,
+        regressor=regressor,
+        binary_mi_k=binary_mi_k,
+        continuous_mi_k=continuous_mi_k,
+        kernel_degree=kernel_degree,
+    ).fit(metric_scores, coreset_size=max_coreset_size, seed=seed)
+    full_coreset = predictor.get_coreset()
+
+    results: ModelScoresAtBudget = []
+    for coreset_size in coreset_sizes:
+        coreset = full_coreset[:coreset_size]
         if regressor is None:
             results.append(
                 {
@@ -548,10 +551,6 @@ def feature_selection_regression_budgets(
                 }
             )
         else:
-            # train regressor with true coreset scores to predict proxy global score
-            # This is best suited for when we have "train" models where we know the true scores over all items and can train this regressor, which is then used
-            # for test models where we only have the coreset scores.
-            # Currently, since we have to use proxy global score, there is a metric mismatch and the following is not useful. 
             X = true_scores[:, coreset]
             y = metric_scores.mean(-1)
             predictor.fit_regressor(X, y)
