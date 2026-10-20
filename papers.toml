@@ -1,6 +1,6 @@
 [[papers]]
 Paper = "CollabEval: Statistically Efficient Collaborative Model Evaluation via Matrix Completion"
-Nickname = "CollabEval"
+Filename = "CollabEval"
 Link = "https://arxiv.org/pdf/2607.05046"
 Problem = "item+model selection"
 Sequential = "no"
@@ -14,8 +14,9 @@ Meta-goal = "Reduce computation and annotation budgets for LLM evaluation while 
 
 [[papers]]
 Paper = "How to Select Datapoints for Efficient Human Evaluation of NLG Models?"
-Nickname = "subset2evaluate"
+Filename = "subset2evaluate"
 Implemented = true
+Methodname = "Metric Variance, Average, Consistency"
 Link = "https://aclanthology.org/2025.tacl-1.80.pdf"
 Problem = "item selection"
 Sequential = "no"
@@ -29,8 +30,9 @@ Meta-goal = "Small but informative testset for NLG human evaluation"
 
 [[papers]]
 Paper = "Dynamically Allocating Evaluation Effort for Model Ranking"
-Nickname = "evaluation_bandit"
+Filename = "evaluation_bandit"
 Implemented = true
+Methodname = "UCB, Weighted Sampling, Random (uniform), Random (nonsquare)"
 Link = "https://vilda.net/papers/evaluation_bandit.pdf"
 Problem = "model selection"
 Sequential = "yes"
@@ -43,9 +45,10 @@ Method = "Frames evaluation effort allocation across models as best-arm identifi
 Meta-goal = "Efficient model ranking"
 
 [[papers]]
-Paper = "tinyBenchmarks"
-Nickname = "tinyBenchmarks"
+Paper = "tinyBenchmarks: evaluating LLMs with fewer examples"
+Filename = "tinyBenchmarks"
 Implemented = true
+Methodname = "Tiny Benchmarks"
 Link = "https://arxiv.org/pdf/2402.14992"
 Problem = "item selection"
 Sequential = "no"
@@ -59,8 +62,9 @@ Meta-goal = "Efficient LLM evaluation with fewer examples"
 
 [[papers]]
 Paper = "How Benchmark Prediction from Fewer Data Misses the Mark"
-Nickname = "misses_the_mark"
+Filename = "misses_the_mark"
 Implemented = true
+Methodname = "Misses the Mark (AIPW)"
 Link = "https://arxiv.org/abs/2506.07673"
 Problem = "item selection"
 Sequential = "no"
@@ -74,7 +78,7 @@ Meta-goal = "Reliable benchmark prediction from fewer data"
 
 [[papers]]
 Paper = "Adaptive Budget Allocation in LLM-Augmented Surveys"
-Nickname = "adaptive_budget_allocation"
+Filename = "adaptive_budget_allocation"
 Link = "https://arxiv.org/pdf/2604.12497"
 Problem = "item selection"
 Sequential = "yes"
@@ -88,8 +92,9 @@ Meta-goal = "Optimal human-label allocation in LLM-augmented surveys"
 
 [[papers]]
 Paper = "Stop Guessing When to Stop Testing: Efficient Model Evaluation with Just Enough Data"
-Nickname = "just_enough_data"
+Filename = "just_enough_data"
 Implemented = true
+Methodname = "Just Enough Data (GST)"
 Link = "https://aclanthology.org/2026.findings-acl.43.pdf"
 Problem = "item selection"
 Sequential = "yes"
@@ -103,7 +108,7 @@ Meta-goal = "Efficient model evaluation with sequential testing"
 
 [[papers]]
 Paper = "Efficient Benchmarking (of Language Models)"
-Nickname = "efficient_benchmarking"
+Filename = "efficient_benchmarking"
 Link = "https://aclanthology.org/2024.naacl-long.139.pdf"
 Problem = "item selection"
 Sequential = "yes"
@@ -117,7 +122,7 @@ Meta-goal = "Efficient multi-benchmark LM evaluation"
 
 [[papers]]
 Paper = "Fluid Language Model Benchmarking"
-Nickname = "fluid_benchmarking"
+Filename = "fluid_benchmarking"
 Link = "https://arxiv.org/abs/2509.11106"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -131,7 +136,7 @@ Meta-goal = "Dynamic LM benchmarking"
 
 [[papers]]
 Paper = "100 instances is all you need: predicting the success of a new LLM on unseen data by testing on a few instances"
-Nickname = "100_instances"
+Filename = "100_instances"
 Link = "https://arxiv.org/abs/2409.03563"
 Problem = "item selection"
 Sequential = "no"
@@ -145,8 +150,9 @@ Meta-goal = "Predicting LLM per-instance success from few evaluations"
 
 [[papers]]
 Paper = "Scales++: Compute Efficient Evaluation Subset Selection"
-Nickname = "scales_plus_plus"
+Filename = "scales_plus_plus"
 Implemented = true
+Methodname = "Scales++"
 Link = "https://arxiv.org/abs/2510.26384"
 Problem = "item selection"
 Sequential = "no"
@@ -160,7 +166,7 @@ Meta-goal = "Compute efficient evaluation subset selection"
 
 [[papers]]
 Paper = "FAQ: Efficient Evaluation of LLM Performance"
-Nickname = "faq"
+Filename = "faq"
 Link = "https://arxiv.org/abs/2601.20251"
 Problem = "item selection"
 Sequential = "yes"
@@ -174,7 +180,7 @@ Meta-goal = "Efficient evaluation with statistical guarantees"
 
 [[papers]]
 Paper = "Active Model Selection for Large Language Models (LLM Selector)"
-Nickname = "llm_selector"
+Filename = "llm_selector"
 Link = "https://arxiv.org/abs/2510.09418"
 Problem = "model selection"
 Sequential = "yes"
@@ -188,8 +194,9 @@ Meta-goal = "Active model selection of LLMs"
 
 [[papers]]
 Paper = "Label-Efficient Model Selection for Text Generation (DiffUse)"
-Nickname = "diffuse"
+Filename = "diffuse"
 Implemented = true
+Methodname = "DiffUse"
 Link = "https://aclanthology.org/2024.acl-long.456.pdf"
 Problem = "item selection"
 Sequential = "yes"
@@ -203,7 +210,7 @@ Meta-goal = "Label-efficient model selection for text generation"
 
 [[papers]]
 Paper = "Active Evaluation: Efficient NLG Evaluation with Few Pairwise Comparisons"
-Nickname = "active_evaluation"
+Filename = "active_evaluation"
 Link = "https://arxiv.org/abs/2203.06063"
 Problem = "model selection"
 Sequential = "yes"
@@ -217,8 +224,9 @@ Meta-goal = "Efficient NLG system ranking via pairwise comparisons"
 
 [[papers]]
 Paper = "Anchor Points: Benchmarking Models with Much Fewer Examples"
-Nickname = "anchor_points"
+Filename = "anchor_points"
 Implemented = true
+Methodname = "Anchor Points"
 Link = "https://arxiv.org/abs/2309.08638"
 Problem = "item selection"
 Sequential = "no"
@@ -232,8 +240,9 @@ Meta-goal = "Benchmarking models with much fewer examples"
 
 [[papers]]
 Paper = "Active Testing: Sample-Efficient Model Evaluation"
-Nickname = "active_testing"
+Filename = "active_testing"
 Implemented = true
+Methodname = "Active Testing (LURE)"
 Link = "https://arxiv.org/abs/2103.05331"
 Problem = "item selection"
 Sequential = "yes"
@@ -247,8 +256,9 @@ Meta-goal = "Sample-efficient model evaluation"
 
 [[papers]]
 Paper = "ATLAS: Adaptive Testing for Language Models"
-Nickname = "atlas"
+Filename = "atlas"
 Implemented = true
+Methodname = "ATLAS (CAT)"
 Link = "https://openreview.net/forum?id=iX39LhePyd"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -262,7 +272,7 @@ Meta-goal = "Psychometric adaptive testing for LLMs"
 
 [[papers]]
 Paper = "SubLIME: Subset Selection via Rank Correlation Prediction for Data-Efficient LLM Evaluation"
-Nickname = "sublime"
+Filename = "sublime"
 Link = "https://aclanthology.org/2025.acl-long.1477.pdf"
 Problem = "item selection"
 Sequential = "no"
@@ -276,7 +286,7 @@ Meta-goal = "Data-efficient LLM evaluation"
 
 [[papers]]
 Paper = "Generative Active Testing: Efficient LLM Evaluation via Proxy Task Adaptation"
-Nickname = "generative_active_testing"
+Filename = "generative_active_testing"
 Link = "https://arxiv.org/abs/2603.19264"
 Problem = "item selection"
 Sequential = "yes"
@@ -290,8 +300,9 @@ Meta-goal = "Efficient LLM evaluation via proxy tasks"
 
 [[papers]]
 Paper = "Towards Optimal Evaluation Efficiency for Large Language Models"
-Nickname = "optimal_eval_efficiency"
+Filename = "optimal_eval_efficiency"
 Implemented = true
+Methodname = "Optimal Eval Efficiency"
 Link = "https://aclanthology.org/2025.emnlp-main.716.pdf"
 Problem = "item selection"
 Sequential = "no"
@@ -305,8 +316,9 @@ Meta-goal = "Optimal evaluation efficiency for LLMs"
 
 [[papers]]
 Paper = "Beyond One-Size-Fits-All: Tailored Benchmarks for Efficient Evaluation"
-Nickname = "tailored_benchmarks"
+Filename = "tailored_benchmarks"
 Implemented = true
+Methodname = "Tailored Benchmarks"
 Link = "https://aclanthology.org/2025.acl-long.759/"
 Problem = "item+model selection"
 Sequential = "no"
@@ -320,8 +332,9 @@ Meta-goal = "Tailored benchmarks for efficient evaluation"
 
 [[papers]]
 Paper = "Active Testing of Large Language Models via Approximate Neyman Allocation"
-Nickname = "neyman_allocation"
+Filename = "neyman_allocation"
 Implemented = true
+Methodname = "Neyman Allocation"
 Link = "https://arxiv.org/pdf/2605.10075"
 Problem = "item selection"
 Sequential = "no"
@@ -335,8 +348,9 @@ Meta-goal = "Active testing of LLMs"
 
 [[papers]]
 Paper = "Valid Best-Model Identification for LLM Evaluation via Low-Rank Factorization"
-Nickname = "valid_best_model"
+Filename = "valid_best_model"
 Implemented = true
+Methodname = "Valid Best Model (PULSE)"
 Link = "https://arxiv.org/pdf/2605.10405"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -350,8 +364,9 @@ Meta-goal = "Budget-constrained best model identification"
 
 [[papers]]
 Paper = "Select, Label, Evaluate: Active Testing in NLP"
-Nickname = "select_label_evaluate"
+Filename = "select_label_evaluate"
 Implemented = true
+Methodname = "Select Label Evaluate"
 Link = "https://arxiv.org/pdf/2603.21840"
 Problem = "item selection"
 Sequential = "yes"
@@ -365,7 +380,7 @@ Meta-goal = "Budget-constrained active testing for performance estimation"
 
 [[papers]]
 Paper = "Beyond Fixed Benchmarks and Worst-Case Attacks: Dynamic Boundary Evaluation for Language Models"
-Nickname = "dynamic_boundary"
+Filename = "dynamic_boundary"
 Link = "https://arxiv.org/pdf/2605.06213"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -379,7 +394,7 @@ Meta-goal = "Dynamic boundary evaluation for LLMs"
 
 [[papers]]
 Paper = "Robust LLM Performance Certification via Constrained Maximum Likelihood Estimation"
-Nickname = "robust_llm_certification"
+Filename = "robust_llm_certification"
 Link = "https://arxiv.org/abs/2604.03257"
 Problem = "failure rate estimation"
 Sequential = "no"
@@ -393,7 +408,7 @@ Meta-goal = "Robust LLM failure rate certification"
 
 [[papers]]
 Paper = "Position: Science of AI Evaluation Requires Item-level Benchmark Data"
-Nickname = "item_level_benchmark"
+Filename = "item_level_benchmark"
 Link = "https://arxiv.org/pdf/2604.03244"
 Problem = "position paper"
 Sequential = "no"
@@ -407,7 +422,7 @@ Meta-goal = "Standardized item-level data releases"
 
 [[papers]]
 Paper = "Measuring Five-Nines Reliability: Sample-Efficient LLM Evaluation in Saturated Benchmarks"
-Nickname = "five_nines_reliability"
+Filename = "five_nines_reliability"
 Link = "https://arxiv.org/pdf/2605.11209"
 Problem = "item selection"
 Sequential = "yes"
@@ -421,7 +436,7 @@ Meta-goal = "Sample-efficient reliability evaluation"
 
 [[papers]]
 Paper = "Fewer Battles, More Gain: An Information-Efficient Framework for Arena-based LLM Evaluation"
-Nickname = "fewer_battles_more_gain"
+Filename = "fewer_battles_more_gain"
 Link = "https://openreview.net/pdf?id=XUVqFRp9oi"
 Problem = "model selection"
 Sequential = "yes"
@@ -435,8 +450,9 @@ Meta-goal = "Information-efficient arena-based evaluation"
 
 [[papers]]
 Paper = "IQ Test for LLMs: An Evaluation Framework for Uncovering Core Skills in LLMs"
-Nickname = "iq_test_llms"
+Filename = "iq_test_llms"
 Implemented = true
+Methodname = "IQ Test for LLMs (Factor Analysis)"
 Link = "https://arxiv.org/pdf/2507.20208"
 Problem = "item+model selection"
 Sequential = "no"
@@ -450,7 +466,7 @@ Meta-goal = "Uncovering core skills in LLMs"
 
 [[papers]]
 Paper = "HyPAC: Cost-Efficient LLMs–Human Hybrid Annotation with PAC Error Guarantees"
-Nickname = "hypac"
+Filename = "hypac"
 Link = "https://arxiv.org/pdf/2602.02550v1"
 Problem = "item selection"
 Sequential = "no"
@@ -464,7 +480,7 @@ Meta-goal = "Cost-efficient hybrid annotation with PAC guarantees"
 
 [[papers]]
 Paper = "How Many Iterations to Jailbreak? Dynamic Budget Allocation for Multi-Turn LLM Evaluation"
-Nickname = "jailbreak_iterations"
+Filename = "jailbreak_iterations"
 Link = "https://arxiv.org/pdf/2605.06605"
 Problem = "item selection"
 Sequential = "yes"
@@ -478,7 +494,7 @@ Meta-goal = "Dynamic budget allocation for multi-turn LLM evaluation"
 
 [[papers]]
 Paper = "Efficient Evaluation of LLM Performance with Statistical Guarantees"
-Nickname = "efficient_eval_statistical"
+Filename = "efficient_eval_statistical"
 Link = "https://arxiv.org/pdf/2601.20251"
 Problem = "item selection"
 Sequential = "yes"
@@ -492,7 +508,7 @@ Meta-goal = "Efficient evaluation with statistical guarantees"
 
 [[papers]]
 Paper = "Nonparametric LLM Evaluation from Preference Data"
-Nickname = "nonparametric_llm_eval"
+Filename = "nonparametric_llm_eval"
 Link = "https://arxiv.org/pdf/2601.21816"
 Problem = "item+model selection"
 Sequential = "no"
@@ -506,7 +522,7 @@ Meta-goal = "Nonparametric LLM evaluation from preference data"
 
 [[papers]]
 Paper = "The Scaling Law of Evaluation Failure: Why Simple Averaging Collapses Under Data Sparsity and Item Difficulty Gaps, and How Item Response Theory Recovers Ground Truth Across Domains"
-Nickname = "scaling_law_eval_failure"
+Filename = "scaling_law_eval_failure"
 Link = "https://arxiv.org/pdf/2605.11205"
 Problem = "model selection"
 Sequential = "no"
@@ -520,7 +536,7 @@ Meta-goal = "Robust evaluation under sparse and heterogeneous data"
 
 [[papers]]
 Paper = "Cost-Efficient Estimation of General Abilities Across Benchmarks"
-Nickname = "cost_efficient_estimation"
+Filename = "cost_efficient_estimation"
 Link = "https://arxiv.org/pdf/2604.01418"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -534,7 +550,7 @@ Meta-goal = "Cost-efficient estimation of general abilities"
 
 [[papers]]
 Paper = "Rich Insights from Cheap Signals: Efficient Evaluations via Tensor Factorization"
-Nickname = "rich_insights_cheap_signals"
+Filename = "rich_insights_cheap_signals"
 Link = "https://arxiv.org/pdf/2603.02029"
 Problem = "performance estimation"
 Sequential = "no"
@@ -548,7 +564,7 @@ Meta-goal = "Efficient fine-grained evaluations via tensor factorization"
 
 [[papers]]
 Paper = "Instance-Optimal Estimation with Multiple LLM Judges on a Budget"
-Nickname = "instance_optimal_estimation"
+Filename = "instance_optimal_estimation"
 Link = "https://arxiv.org/pdf/2605.23362"
 Problem = "judge selection"
 Sequential = "yes"
@@ -562,8 +578,9 @@ Meta-goal = "Budgeted heteroskedastic multi-judge estimation"
 
 [[papers]]
 Paper = "Efficient Benchmarking Is Just Feature Selection and Multiple Regression"
-Nickname = "feature_selection_regression"
+Filename = "feature_selection_regression"
 Implemented = true
+Methodname = "mRMR"
 Link = "https://arxiv.org/pdf/2605.25773"
 Problem = "item selection"
 Sequential = "no"
@@ -577,7 +594,7 @@ Meta-goal = "Efficient benchmarking via feature selection"
 
 [[papers]]
 Paper = "Large Language Model Selection with Limited Annotations"
-Nickname = "llm_selection_limited"
+Filename = "llm_selection_limited"
 Link = "https://arxiv.org/pdf/2605.24981"
 Problem = "model selection"
 Sequential = "yes"
@@ -591,8 +608,9 @@ Meta-goal = "Active model selection with limited annotations"
 
 [[papers]]
 Paper = "Lost in Benchmarks? Rethinking Large Language Model Benchmarking with Item Response Theory"
-Nickname = "lost_in_benchmarks"
+Filename = "lost_in_benchmarks"
 Implemented = true
+Methodname = "Lost in Benchmarks"
 Link = "https://arxiv.org/abs/2505.15055"
 Problem = "item selection"
 Sequential = "no"
@@ -606,7 +624,7 @@ Meta-goal = "Rethinking LLM benchmarking with IRT"
 
 [[papers]]
 Paper = "Sample-Efficient Human Evaluation of Large Language Models via Maximum Discrepancy Competition"
-Nickname = "sample_efficient_human_evaluation"
+Filename = "sample_efficient_human_evaluation"
 Link = "https://aclanthology.org/2025.acl-long.535.pdf"
 Problem = "item+model selection"
 Sequential = "no"
@@ -620,8 +638,9 @@ Meta-goal = "Sample-efficient human evaluation for comparing LLMs adaptively"
 
 [[papers]]
 Paper = "Efficient Benchmarking of NLP APIs using Multi-armed Bandits"
-Nickname = "efficient_benchmarking_apis"
+Filename = "efficient_benchmarking_apis"
 Implemented = true
+Methodname = "Thompson Sampling"
 Link = "https://aclanthology.org/E17-1039.pdf"
 Problem = "model selection"
 Sequential = "yes"
@@ -635,7 +654,7 @@ Meta-goal = "Identify the best NLP API efficiently"
 
 [[papers]]
 Paper = "Reasoning in Token Economies: Budget-Aware Evaluation of LLM Reasoning Strategies"
-Nickname = "reasoning_token_economies"
+Filename = "reasoning_token_economies"
 Link = "https://aclanthology.org/2024.emnlp-main.1112.pdf"
 Problem = "reasoning evaluation"
 Sequential = "no"
@@ -649,7 +668,7 @@ Meta-goal = "Budget-aware comparison of reasoning strategies"
 
 [[papers]]
 Paper = "Active Testing: An Unbiased Evaluation Method for Distantly Supervised Relation Extraction"
-Nickname = "active_testing_relation_extraction"
+Filename = "active_testing_relation_extraction"
 Link = "https://aclanthology.org/2020.findings-emnlp.20.pdf"
 Problem = "item selection"
 Sequential = "yes"
@@ -663,7 +682,7 @@ Meta-goal = "Unbiased evaluation for distantly supervised relation extraction"
 
 [[papers]]
 Paper = "Is it worth it? Budget-related evaluation metrics for model selection"
-Nickname = "is_it_worth_it"
+Filename = "is_it_worth_it"
 Link = "https://aclanthology.org/L18-1317.pdf"
 Problem = "model selection"
 Sequential = "no"
@@ -677,7 +696,7 @@ Meta-goal = "Budget-related evaluation metrics for model selection"
 
 [[papers]]
 Paper = "MMEVALPRO: Calibrating Multimodal Benchmarks Towards Trustworthy and Efficient Evaluation"
-Nickname = "mmevalpro"
+Filename = "mmevalpro"
 Link = "https://aclanthology.org/2025.naacl-long.247.pdf"
 Problem = "item calibration"
 Sequential = "no"
@@ -691,8 +710,9 @@ Meta-goal = "Calibrating multimodal benchmarks for trustworthy evaluation"
 
 [[papers]]
 Paper = "Item Response Theory for Efficient Human Evaluation of Chatbots"
-Nickname = "irt_chatbots"
+Filename = "irt_chatbots"
 Implemented = true
+Methodname = "IRT Chatbots"
 Link = "https://aclanthology.org/2020.eval4nlp-1.3.pdf"
 Problem = "item selection"
 Sequential = "no"
@@ -706,7 +726,7 @@ Meta-goal = "Efficient human evaluation of chatbots using IRT"
 
 [[papers]]
 Paper = "Debate, Deliberate, Decide (D3): A Cost-Aware Adversarial Framework for Reliable and Interpretable LLM Evaluation"
-Nickname = "d3"
+Filename = "d3"
 Link = "https://aclanthology.org/2026.eacl-long.392.pdf"
 Problem = "model selection"
 Sequential = "yes"
@@ -720,7 +740,7 @@ Meta-goal = "Reliable, interpretable, and cost-aware LLM evaluation via debate"
 
 [[papers]]
 Paper = "Arena-Lite: Efficient and Reliable Large Language Model Evaluation via Tournament-Based Direct Comparisons"
-Nickname = "arena_lite"
+Filename = "arena_lite"
 Link = "https://aclanthology.org/2025.emnlp-main.360.pdf"
 Problem = "model selection"
 Sequential = "yes"
@@ -734,7 +754,7 @@ Meta-goal = "Efficient and reliable LLM evaluation via tournament-based direct c
 
 [[papers]]
 Paper = "EffiEval: Efficient and Generalizable Model Evaluation via Capability Coverage Maximization"
-Nickname = "effieval"
+Filename = "effieval"
 Link = "https://arxiv.org/abs/2508.09662"
 Problem = "item selection"
 Sequential = "no"
@@ -748,7 +768,7 @@ Meta-goal = "Efficient and generalizable model evaluation via capability coverag
 
 [[papers]]
 Paper = "SparseEval: Efficient Evaluation of Large Language Models by Sparse Optimization"
-Nickname = "sparseeval"
+Filename = "sparseeval"
 Link = "https://openreview.net/pdf?id=CZAzAedGSV"
 Problem = "item selection"
 Sequential = "no"
@@ -762,8 +782,9 @@ Meta-goal = "Efficient evaluation of LLMs by sparse optimization"
 
 [[papers]]
 Paper = "Improving Model Evaluation using SMART Filtering of Benchmark Datasets"
-Nickname = "smart_filtering"
+Filename = "smart_filtering"
 Implemented = true
+Methodname = "SMART Filtering"
 Link = "https://aclanthology.org/2025.naacl-long.235.pdf"
 Problem = "item selection"
 Sequential = "no"
@@ -777,8 +798,9 @@ Meta-goal = "Improving model evaluation using SMART filtering"
 
 [[papers]]
 Paper = "Efficient Benchmarking via Bias-Bounded Subset Selection"
-Nickname = "bias_bounded"
+Filename = "bias_bounded"
 Implemented = true
+Methodname = "Bias Bounded (Submodular)"
 Link = "https://ieeexplore.ieee.org/iel8/34/4359286/11123151.pdf"
 Problem = "item selection"
 Sequential = "no"
@@ -792,7 +814,7 @@ Meta-goal = "Efficient benchmarking via bias-bounded subset selection"
 
 [[papers]]
 Paper = "Active Evaluation Acquisition for Efficient LLM Benchmarking"
-Nickname = "active_eval_acquisition"
+Filename = "active_eval_acquisition"
 Link = "https://openreview.net/pdf?id=EHqQaBYYlE"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -806,7 +828,7 @@ Meta-goal = "Active evaluation acquisition for efficient LLM benchmarking"
 
 [[papers]]
 Paper = "Benchmark2: Systematic Evaluation of LLM Benchmarks"
-Nickname = "benchmark2"
+Filename = "benchmark2"
 Link = "https://arxiv.org/pdf/2601.03986"
 Problem = "benchmark evaluation"
 Sequential = "no"
@@ -820,8 +842,9 @@ Meta-goal = "Systematic evaluation of LLM benchmarks"
 
 [[papers]]
 Paper = "Confident Rankings with Fewer Items: Adaptive LLM Evaluation with Continuous Scores"
-Nickname = "confident_rankings"
+Filename = "confident_rankings"
 Implemented = true
+Methodname = "Confident Rankings (Continuous CAT)"
 Link = "https://arxiv.org/abs/2601.13885"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -836,8 +859,9 @@ Meta-goal = "Adaptive testing to continuous bounded scores for efficient evaluat
 
 [[papers]]
 Paper = "Cutting LLM Evaluation Costs with SySRs: A Bandit Algorithm that Provably Exploits Model Similarity"
-Nickname = "syrs_bandit"
+Filename = "syrs_bandit"
 Implemented = true
+Methodname = "SySRs Bandit"
 Link = "https://arxiv.org/pdf/2606.07726"
 Problem = "model selection"
 Sequential = "yes"
@@ -851,7 +875,7 @@ Meta-goal = "Efficient model selection via synchronized successive rejects"
 
 [[papers]]
 Paper = "How Reliable is Language Model Micro-Benchmarking?"
-Nickname = "reliable_microbenchmarking"
+Filename = "reliable_microbenchmarking"
 Link = "https://openreview.net/forum?id=cReExMQLiK"
 Problem = "item selection"
 Sequential = "no"
@@ -865,7 +889,7 @@ Meta-goal = "Evaluating reliability of micro-benchmarks"
 
 [[papers]]
 Paper = "Efficient Cost-Aware LLM Evaluation via Bayesian Bandit Gittins Indices"
-Nickname = "cost_aware_gittins"
+Filename = "cost_aware_gittins"
 Link = "https://openreview.net/pdf?id=GlVWFamE4j"
 Problem = "model selection"
 Sequential = "yes"
@@ -880,7 +904,7 @@ Meta-goal = "Efficient cost-aware model selection via Bayesian bandit Gittins in
 
 [[papers]]
 Paper = "Extending Item Response Theory for Efficient and Meaningful Multilingual Evaluation"
-Nickname = "multilingual_irt"
+Filename = "multilingual_irt"
 Link = "https://arxiv.org/pdf/2606.15643"
 Problem = "performance estimation"
 Sequential = "no"
@@ -894,7 +918,7 @@ Meta-goal = "Efficient and meaningful multilingual evaluation"
 
 [[papers]]
 Paper = "Prompt-Based Cost-Effective Evaluation and Operation of ChatGPT as a Computer Programming Teaching Assistant"
-Nickname = "chatgpt_ta"
+Filename = "chatgpt_ta"
 Link = "https://arxiv.org/pdf/2501.17176"
 Problem = "failure rate estimation"
 Sequential = "no"
