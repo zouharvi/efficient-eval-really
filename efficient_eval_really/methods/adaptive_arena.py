@@ -24,7 +24,7 @@ def adaptive_arena_budgets(
        evaluated on that prompt for 0 additional generation cost.
     4. Updates ratings and information matrix online via Sherman-Morrison rank-1 updates.
     """
-    rng = np.random.default_rng(seed)
+    np.random.default_rng(seed)
     models = list(data[0]["scores"].keys())
     n_models = len(models)
     n_items = len(data)
@@ -84,10 +84,7 @@ def adaptive_arena_budgets(
 
         if current_cost >= target_budget or current_cost >= max_possible_cost:
             rates = np.where(matches > 0, wins / matches, 0.5)
-            results_map[target_budget] = {
-                m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])]
-                for i, m in enumerate(models)
-            }
+            results_map[target_budget] = {m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])] for i, m in enumerate(models)}
             budget_idx += 1
             continue
 
@@ -144,10 +141,7 @@ def adaptive_arena_budgets(
             while budget_idx < len(sorted_budgets):
                 tb = sorted_budgets[budget_idx]
                 rates = np.where(matches > 0, wins / matches, 0.5)
-                results_map[tb] = {
-                    m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])]
-                    for i, m in enumerate(models)
-                }
+                results_map[tb] = {m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])] for i, m in enumerate(models)}
                 budget_idx += 1
             break
 
@@ -156,9 +150,6 @@ def adaptive_arena_budgets(
     rates = np.where(matches > 0, wins / matches, 0.5)
     for b in sorted_budgets:
         if b not in results_map:
-            results_map[b] = {
-                m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])]
-                for i, m in enumerate(models)
-            }
+            results_map[b] = {m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])] for i, m in enumerate(models)}
 
     return [results_map[b] for b in budgets]

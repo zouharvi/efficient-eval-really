@@ -54,9 +54,6 @@ def bias_bounded_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
             continue
 
         coreset = selected[:k]
-        results.append({
-            m: [float(data[idx]["scores"][m]) for idx in coreset]
-            for m in models
-        })
+        results.append({m: [float(data[idx]["scores"][m]) for idx in coreset] for m in models})
 
     return results

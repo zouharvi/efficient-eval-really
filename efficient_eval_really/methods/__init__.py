@@ -47,59 +47,44 @@ def fn(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
 
 
 # define all methods
+from efficient_eval_really.methods.active_evaluation import active_evaluation_budgets
 from efficient_eval_really.methods.active_testing import active_testing_budgets
+from efficient_eval_really.methods.adaptive_arena import adaptive_arena_budgets
 from efficient_eval_really.methods.anchor_points import anchor_points_budgets
+from efficient_eval_really.methods.arena_lite import arena_lite_budgets
 from efficient_eval_really.methods.atlas import atlas_budgets
 from efficient_eval_really.methods.bias_bounded import bias_bounded_budgets
+from efficient_eval_really.methods.collab_eval import collab_eval_budgets
 from efficient_eval_really.methods.confident_rankings import confident_rankings_budgets
-from efficient_eval_really.methods.custom import (
-    weighted_sampling_with_priors,
-    weighted_sampling_with_priors_corrected,
-)
-from efficient_eval_really.methods.efficient_benchmarking_apis import (
-    efficient_benchmarking_apis_budgets,
-)
-from efficient_eval_really.methods.evaluation_bandit import (
-    evaluation_bandit_to_ours_budgets,
-)
-from efficient_eval_really.methods.feature_selection_regression import (
-    feature_selection_regression_budgets,
-)
+from efficient_eval_really.methods.cost_aware_gittins import cost_aware_gittins_budgets
+from efficient_eval_really.methods.cost_efficient_estimation import cost_efficient_estimation_budgets
+from efficient_eval_really.methods.custom import weighted_sampling_with_priors, weighted_sampling_with_priors_corrected
+from efficient_eval_really.methods.diffuse import diffuse_budgets
+from efficient_eval_really.methods.efficient_benchmarking import efficient_benchmarking_budgets
+from efficient_eval_really.methods.efficient_benchmarking_apis import efficient_benchmarking_apis_budgets
+from efficient_eval_really.methods.evaluation_bandit import evaluation_bandit_to_ours_budgets
+from efficient_eval_really.methods.faq import faq_budgets
+from efficient_eval_really.methods.feature_selection_regression import feature_selection_regression_budgets
+from efficient_eval_really.methods.fluid_benchmarking import fluid_benchmarking_budgets
 from efficient_eval_really.methods.iq_test_llms import iq_test_llms_budgets
 from efficient_eval_really.methods.irt_chatbots import irt_chatbots_budgets
 from efficient_eval_really.methods.just_enough_data import just_enough_data_budgets
+from efficient_eval_really.methods.llm_selector import llm_selector_budgets, select_llm_budgets
 from efficient_eval_really.methods.lost_in_benchmarks import lost_in_benchmarks_budgets
 from efficient_eval_really.methods.misses_the_mark import misses_the_mark_budgets
 from efficient_eval_really.methods.neyman_allocation import neyman_allocation_budgets
-from efficient_eval_really.methods.optimal_eval_efficiency import (
-    optimal_eval_efficiency_budgets,
-)
-from efficient_eval_really.methods.subset2evaluate import (
-    subset2evaluate_to_ours_budgets,
-)
+from efficient_eval_really.methods.one_hundred_instances import one_hundred_instances_budgets
+from efficient_eval_really.methods.optimal_eval_efficiency import optimal_eval_efficiency_budgets
+from efficient_eval_really.methods.scales_plus_plus import scales_plus_plus_budgets
+from efficient_eval_really.methods.scaling_law_eval_failure import scaling_law_eval_failure_budgets
+from efficient_eval_really.methods.select_label_evaluate import select_label_evaluate_budgets
+from efficient_eval_really.methods.smart_filtering import smart_filtering_budgets
+from efficient_eval_really.methods.sparseeval import sparseeval_budgets
+from efficient_eval_really.methods.subset2evaluate import subset2evaluate_to_ours_budgets
 from efficient_eval_really.methods.syrs_bandit import syrs_bandit_budgets
-from efficient_eval_really.methods.tailored_benchmarks import (
-    tailored_benchmarks_budgets,
-)
+from efficient_eval_really.methods.tailored_benchmarks import tailored_benchmarks_budgets
 from efficient_eval_really.methods.tiny_benchmarks import tiny_benchmarks_budgets
 from efficient_eval_really.methods.valid_best_model import valid_best_model_budgets
-from efficient_eval_really.methods.scales_plus_plus import scales_plus_plus_budgets
-from efficient_eval_really.methods.smart_filtering import smart_filtering_budgets
-from efficient_eval_really.methods.diffuse import diffuse_budgets
-from efficient_eval_really.methods.select_label_evaluate import select_label_evaluate_budgets
-from efficient_eval_really.methods.sparseeval import sparseeval_budgets
-from efficient_eval_really.methods.cost_aware_gittins import cost_aware_gittins_budgets
-from efficient_eval_really.methods.cost_efficient_estimation import cost_efficient_estimation_budgets
-from efficient_eval_really.methods.faq import faq_budgets
-from efficient_eval_really.methods.arena_lite import arena_lite_budgets
-from efficient_eval_really.methods.adaptive_arena import adaptive_arena_budgets
-from efficient_eval_really.methods.collab_eval import collab_eval_budgets
-from efficient_eval_really.methods.one_hundred_instances import one_hundred_instances_budgets
-from efficient_eval_really.methods.llm_selector import llm_selector_budgets, select_llm_budgets
-from efficient_eval_really.methods.active_evaluation import active_evaluation_budgets
-from efficient_eval_really.methods.fluid_benchmarking import fluid_benchmarking_budgets
-from efficient_eval_really.methods.efficient_benchmarking import efficient_benchmarking_budgets
-from efficient_eval_really.methods.scaling_law_eval_failure import scaling_law_eval_failure_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -107,8 +92,8 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Consistency": functools.partial(subset2evaluate_to_ours_budgets, method="metric_cons", metric="metric"),
     "UCB": functools.partial(evaluation_bandit_to_ours_budgets, method="upper_confidence_bound"),
     "Weighted Sampling": functools.partial(evaluation_bandit_to_ours_budgets, method="weighted_sampling"),
-    "Random (uniform)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform"),
-    "Random (nonsquare)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform_nonsquare"),
+    "Random (uniform)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform", seeds=5),
+    "Random (nonsquare)": functools.partial(evaluation_bandit_to_ours_budgets, method="uniform_nonsquare", seeds=5),
     "Tailored Benchmarks": tailored_benchmarks_budgets,
     "Anchor Points": anchor_points_budgets,
     "Tiny Benchmarks (clustering)": functools.partial(tiny_benchmarks_budgets, method="clustering"),
@@ -150,7 +135,6 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Fluid Benchmarking (CAT)": fluid_benchmarking_budgets,
     "Efficient Benchmarking (Greedy)": efficient_benchmarking_budgets,
     "Scaling Law IRT Recovery": scaling_law_eval_failure_budgets,
-    "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
-    # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
+    "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,
 }

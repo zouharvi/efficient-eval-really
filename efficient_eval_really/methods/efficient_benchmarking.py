@@ -72,8 +72,6 @@ def efficient_benchmarking_budgets(
         k = max(1, min(k, n_items))
 
         subset_items = selected[:k]
-        results_map[b] = {
-            m: [data[i]["scores"][m] for i in subset_items] for m in models
-        }
+        results_map[b] = {m: [data[i]["scores"][m] for i in subset_items] for m in models}
 
     return [results_map[b] for b in budgets]

@@ -74,9 +74,9 @@ def cost_efficient_estimation_budgets(
                 c_mat = K_cand @ C
                 c_M_c = np.sum(c_mat * (c_mat @ M), axis=1)
                 K_c = np.sum(K_cand * c_mat, axis=1)
-                denom = 1.0 + w * (a_cand ** 2) * K_c
+                denom = 1.0 + w * (a_cand**2) * K_c
 
-                v_opt = (w * (a_cand ** 2) * c_M_c) / np.maximum(1e-12, denom)
+                v_opt = (w * (a_cand**2) * c_M_c) / np.maximum(1e-12, denom)
                 scores_cand = v_opt / np.maximum(1e-6, cost_cand)
 
                 best_idx_in_cand = int(np.argmax(scores_cand))
@@ -90,7 +90,7 @@ def cost_efficient_estimation_budgets(
                 w_x = w[best_idx_in_cand]
                 a_x = a_cand[best_idx_in_cand]
                 denom_x = denom[best_idx_in_cand]
-                C = C - (w_x * (a_x ** 2) / denom_x) * np.outer(c_x, c_x)
+                C = C - (w_x * (a_x**2) / denom_x) * np.outer(c_x, c_x)
 
                 # Update theta
                 y_obs = float(data[best_item]["scores"][m])

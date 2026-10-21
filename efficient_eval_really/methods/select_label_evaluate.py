@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.cluster import KMeans
+
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
@@ -42,6 +43,7 @@ def select_label_evaluate_budgets(
             continue
 
         import warnings
+
         from sklearn.exceptions import ConvergenceWarning
 
         with warnings.catch_warnings():
@@ -58,9 +60,6 @@ def select_label_evaluate_budgets(
             best_member = int(members[np.argmax(uncertainty[members])])
             coreset.append(best_member)
 
-        results.append({
-            m: [float(data[idx]["scores"][m]) for idx in coreset]
-            for m in models
-        })
+        results.append({m: [float(data[idx]["scores"][m]) for idx in coreset] for m in models})
 
     return results

@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
@@ -25,9 +26,7 @@ def smart_filtering_budgets(
     n_items = len(data)
 
     # 1. Filter out ceiling / easy examples
-    avg_scores = np.array(
-        [float(np.mean([item["scores_metrics"][m][metric] for m in models])) for item in data]
-    )
+    avg_scores = np.array([float(np.mean([item["scores_metrics"][m][metric] for m in models])) for item in data])
     cutoff = float(np.percentile(avg_scores, easy_percentile))
     candidate_indices = [i for i in range(n_items) if avg_scores[i] < cutoff]
     if len(candidate_indices) < 2:
@@ -43,9 +42,7 @@ def smart_filtering_budgets(
         )
 
     sim_matrix = cosine_similarity(cand_embeddings)
-    vars_cand = np.array(
-        [float(np.std([data[i]["scores_metrics"][m][metric] for m in models])) for i in candidate_indices]
-    )
+    vars_cand = np.array([float(np.std([data[i]["scores_metrics"][m][metric] for m in models])) for i in candidate_indices])
     sorted_cand = np.argsort(vars_cand)[::-1]
 
     kept_indices: list[int] = []
@@ -75,9 +72,6 @@ def smart_filtering_budgets(
             continue
 
         coreset = kept_indices[:k]
-        results.append({
-            m: [float(data[idx]["scores"][m]) for idx in coreset]
-            for m in models
-        })
+        results.append({m: [float(data[idx]["scores"][m]) for idx in coreset] for m in models})
 
     return results

@@ -48,7 +48,7 @@ def syrs_bandit_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelSc
             if pool_idx + delta_n > n_items:
                 delta_n = max(0, n_items - pool_idx)
 
-            phase_items = item_pool[pool_idx:pool_idx + delta_n]
+            phase_items = item_pool[pool_idx : pool_idx + delta_n]
             pool_idx += delta_n
             n_prev = nk
 
@@ -56,10 +56,7 @@ def syrs_bandit_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelSc
                 evaluated_items[m].extend(phase_items)
 
             if len(active_models) > 1 and phase_items:
-                means = {
-                    m: float(np.mean([data[idx]["scores"][m] for idx in evaluated_items[m]]))
-                    for m in active_models
-                }
+                means = {m: float(np.mean([data[idx]["scores"][m] for idx in evaluated_items[m]])) for m in active_models}
                 worst_m = min(active_models, key=lambda m: means[m])
                 active_models.remove(worst_m)
 

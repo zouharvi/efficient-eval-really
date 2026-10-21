@@ -96,10 +96,7 @@ def active_evaluation_budgets(
                 break
 
         # Construct results
-        model_scores = {
-            m: [data[j]["scores"][m] for j in evaluated[i]]
-            for i, m in enumerate(models)
-        }
+        model_scores = {m: [data[j]["scores"][m] for j in evaluated[i]] for i, m in enumerate(models)}
         results_map[b] = model_scores
 
     return [results_map[b] for b in budgets]

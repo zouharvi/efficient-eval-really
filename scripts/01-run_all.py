@@ -39,11 +39,10 @@ for method_name, method_fn in efficient_eval_really.methods.METHODS_BUDGETS.item
         if not args.no_reuse and data_name in results_out[method_name]:
             continue
 
-        budgets = [int(b * len(data) * len(data[0]['scores'])) for b in BUDGETS_FRAC]
-        model_scores_all = {
-            model: [item['scores'][model] for item in data] for model in data[0]['scores'] 
-        }
+        budgets = [int(b * len(data) * len(data[0]["scores"])) for b in BUDGETS_FRAC]
+        model_scores_all = {model: [item["scores"][model] for item in data] for model in data[0]["scores"]}
         parallelization_queue.append((method_name, method_fn, data_name, data, budgets, model_scores_all))
+
 
 # do the computation
 def _my_compute_function_coz_lambdas_dont_pickle(x):
@@ -53,18 +52,20 @@ def _my_compute_function_coz_lambdas_dont_pickle(x):
     runtime = time.perf_counter() - t0
     runtime_avg = runtime / len(budgets) if budgets else runtime
     return (method_name, model_scores_subset_at_budgets, data_name, model_scores_all, budgets, runtime_avg)
+
+
 if args.workers > 0:
     import multiprocessing
+
     with multiprocessing.Pool(args.workers) as pool:
-        results = list(tqdm.tqdm(pool.imap_unordered(
-            _my_compute_function_coz_lambdas_dont_pickle, parallelization_queue),
-            total=len(parallelization_queue)
-        ))
+        results = list(
+            tqdm.tqdm(
+                pool.imap_unordered(_my_compute_function_coz_lambdas_dont_pickle, parallelization_queue),
+                total=len(parallelization_queue),
+            )
+        )
 else:
-    results = [
-        _my_compute_function_coz_lambdas_dont_pickle(x)
-        for x in tqdm.tqdm(parallelization_queue)
-    ]
+    results = [_my_compute_function_coz_lambdas_dont_pickle(x) for x in tqdm.tqdm(parallelization_queue)]
 
 # collate the results
 for method_name, model_scores_subset_at_budgets, data_name, model_scores_all, budgets, runtime_avg in tqdm.tqdm(results):

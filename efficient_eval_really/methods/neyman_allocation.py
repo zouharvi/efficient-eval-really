@@ -26,7 +26,7 @@ def neyman_allocation_budgets(
     S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])
     n_items, n_models = S.shape
 
-    # Surrogate signal approximated for our setup 
+    # Surrogate signal approximated for our setup
     # Semantic entropy (SE): Cross-model score variance per item
     # Self-consistency (SC): Cross-model mean score per item
     se_proxy = S.var(axis=1)
@@ -37,14 +37,14 @@ def neyman_allocation_budgets(
 
     # Adaptive Stratification
     # identifying zero vs. non-zero variance items
-    zero_idx = np.where(se_proxy == 0.0)[0].tolist() 
-    nonzero_idx = np.where(se_proxy > 0.0)[0] 
+    zero_idx = np.where(se_proxy == 0.0)[0].tolist()
+    nonzero_idx = np.where(se_proxy > 0.0)[0]
     # creating strata
     strata: list[list[int]] = [zero_idx]
-    n_rem = n_strata - 1 
+    n_rem = n_strata - 1
     if len(nonzero_idx) > 0 and n_rem > 0:
         edges = np.quantile(se_proxy[nonzero_idx], np.linspace(0, 1, n_rem + 1))
-        bins = np.digitize(se_proxy[nonzero_idx], edges[1:-1])  
+        bins = np.digitize(se_proxy[nonzero_idx], edges[1:-1])
         for h in range(n_rem):
             strata.append(nonzero_idx[bins == h].tolist())
     strata = [s for s in strata if len(s) > 0]
@@ -78,7 +78,7 @@ def neyman_allocation_budgets(
         raw = k * weights / weights.sum()
         m_h = np.clip(np.round(raw).astype(int), 1, N_h.astype(int))
 
-        # Fix rounding 
+        # Fix rounding
         diff = k - int(m_h.sum())
         for idx in np.argsort(-weights):
             if diff == 0:
@@ -91,18 +91,12 @@ def neyman_allocation_budgets(
             diff -= step
 
         # Uniform sampling without replacement within each stratum
-        sampled: list[list[int]] = [
-            rng.choice(strata[h], size=int(m_h[h]), replace=False).tolist()
-            for h in range(H)
-        ]
+        sampled: list[list[int]] = [rng.choice(strata[h], size=int(m_h[h]), replace=False).tolist() for h in range(H)]
 
         # Horvitz-Thompson estimator (correcting for strata sampling rate)
         out: dict[str, list[float]] = {}
         for m in models:
-            ht = sum(
-                N_h[h] * float(np.mean([data[i]["scores"][m] for i in sampled[h]]))
-                for h in range(H)
-            )
+            ht = sum(N_h[h] * float(np.mean([data[i]["scores"][m] for i in sampled[h]])) for h in range(H))
             out[m] = [ht / n_items]
         results.append(out)
 

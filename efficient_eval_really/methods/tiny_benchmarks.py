@@ -11,6 +11,7 @@ def _binarize(S: np.ndarray) -> np.ndarray:
 def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
     """k-Means clustering; return index of item nearest each centroid."""
     import warnings
+
     from sklearn.cluster import KMeans
     from sklearn.exceptions import ConvergenceWarning
     from sklearn.metrics import pairwise_distances
@@ -25,27 +26,30 @@ def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
 def _fit_irt(Y: np.ndarray, D: int = 10) -> np.ndarray:
     """Fit multidim 2PL IRT on Y (n_models, n_items) via MLE. Returns (n_items, 2*D) embeddings."""
     from scipy.optimize import minimize
+
     n_models, n_items = Y.shape
     eps = 1e-8
 
     mean_p = np.clip(Y.mean(axis=0), eps, 1 - eps)
     # warm-start: first dim = scalar 2PL, remaining dims = 0
-    A0 = np.zeros((n_items, D)); A0[:, 0] = 1.0
-    B0 = np.zeros((n_items, D)); B0[:, 0] = -np.log(mean_p / (1 - mean_p))
+    A0 = np.zeros((n_items, D))
+    A0[:, 0] = 1.0
+    B0 = np.zeros((n_items, D))
+    B0[:, 0] = -np.log(mean_p / (1 - mean_p))
     x0 = np.concatenate([A0.ravel(), B0.ravel(), np.zeros(n_models * D)])
 
     def nll(x):
-        A = x[:n_items * D].reshape(n_items, D)
-        B = x[n_items * D:2 * n_items * D].reshape(n_items, D)
-        theta = x[2 * n_items * D:].reshape(n_models, D)
+        A = x[: n_items * D].reshape(n_items, D)
+        B = x[n_items * D : 2 * n_items * D].reshape(n_items, D)
+        theta = x[2 * n_items * D :].reshape(n_models, D)
         # logits[m, i] = sum_d A[i,d]*theta[m,d] - B[i,d]
         logits = (A[None, :, :] * theta[:, None, :] - B[None, :, :]).sum(axis=2)
         p = 1 / (1 + np.exp(-np.clip(logits, -30, 30)))
         return -(Y * np.log(p + eps) + (1 - Y) * np.log(1 - p + eps)).sum()
 
     res = minimize(nll, x0, method="L-BFGS-B", options={"maxiter": 500})
-    A = res.x[:n_items * D].reshape(n_items, D)
-    B = res.x[n_items * D:2 * n_items * D].reshape(n_items, D)
+    A = res.x[: n_items * D].reshape(n_items, D)
+    B = res.x[n_items * D : 2 * n_items * D].reshape(n_items, D)
     return np.hstack([A, B])  # (n_items, 2*D)
 
 
@@ -62,9 +66,9 @@ def tiny_benchmarks_budgets(data: Data, budgets: Budgets, method: str) -> ModelS
 
     Y = _binarize(S)
     if method == "clustering":
-        X = Y                      # (n_items, n_models)
+        X = Y  # (n_items, n_models)
     elif method == "irt":
-        X = _fit_irt(Y.T)          # (n_items, 2)
+        X = _fit_irt(Y.T)  # (n_items, 2)
     else:
         raise ValueError(f"Unknown method: {method!r}")
 

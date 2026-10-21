@@ -6,7 +6,7 @@ from efficient_eval_really.methods import ModelScores, ModelScoresSubset
 
 def meta_evaluate_scores_subset(model_scores: ModelScoresSubset, model_scores_all: ModelScores) -> dict[str, float]:
     """Meta-evaluate subset evaluation scores against ground-truth full-benchmark scores.
-    
+
     Computes:
       - corr_tau: Kendall tau correlation of model scores.
       - corr_wtau: Weighted Kendall tau focusing on top-ranked models.
@@ -30,8 +30,8 @@ def meta_evaluate_scores_subset(model_scores: ModelScoresSubset, model_scores_al
     item_mae = float(np.mean(item_errors))
 
     return {
-        "corr_tau": scipy.stats.kendalltau(model_avg, model_avg_true).correlation, # type: ignore
-        "corr_wtau": scipy.stats.weightedtau(model_avg, model_avg_true, weigher=lambda rank: 1 / (rank + 1)).correlation, # type: ignore
+        "corr_tau": scipy.stats.kendalltau(model_avg, model_avg_true).correlation,  # type: ignore
+        "corr_wtau": scipy.stats.weightedtau(model_avg, model_avg_true, weigher=lambda rank: 1 / (rank + 1)).correlation,  # type: ignore
         "model_mae": model_mae,
         "item_mae": item_mae,
     }

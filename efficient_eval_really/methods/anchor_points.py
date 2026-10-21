@@ -11,7 +11,6 @@ def anchor_points_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
     S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])  # (n_items, n_models)
     n_items, n_models = S.shape
 
-    
     with np.errstate(invalid="ignore"):
         D = 1 - np.nan_to_num(np.corrcoef(S), nan=0.0)
     np.fill_diagonal(D, 0.0)

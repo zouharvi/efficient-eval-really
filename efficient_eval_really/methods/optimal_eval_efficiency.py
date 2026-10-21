@@ -22,7 +22,7 @@ def optimal_eval_efficiency_budgets(
     S = np.array(
         [[item["scores_metrics"][m][metric] for m in models] for item in data],
         dtype=float,
-    )  
+    )
     n_items, n_models = S.shape
     true_means = S.mean(axis=0)  # full benchmark mean per model
 
@@ -39,7 +39,7 @@ def optimal_eval_efficiency_budgets(
         # initialise with a random subset
         current = list(rng.choice(n_items, k, replace=False).tolist())
         not_in = list(set(range(n_items)) - set(current))
-        current_sum = S[current].sum(axis=0)  
+        current_sum = S[current].sum(axis=0)
 
         def _obj(s: np.ndarray) -> float:
             return float(np.sum((s / k - true_means) ** 2))
@@ -51,7 +51,7 @@ def optimal_eval_efficiency_budgets(
         for step in range(n_iter):
             T = T_start * (T_end / T_start) ** (step / n_iter)
 
-            # swapping items 
+            # swapping items
             ri = int(rng.integers(k))
             ai = int(rng.integers(n_items - k))
             remove, add = current[ri], not_in[ai]

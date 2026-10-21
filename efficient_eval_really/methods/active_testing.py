@@ -68,9 +68,6 @@ def active_testing_budgets(data: Data, budgets: Budgets, seed: int = 42) -> Mode
             remaining_indices.pop(pick_idx_in_rem)
 
         # Scale evaluated scores by LURE weights so np.mean equals R_LURE
-        results.append({
-            m: [float(v * data[idx]["scores"][m]) for v, idx in zip(v_weights, sampled_indices)]
-            for m in models
-        })
+        results.append({m: [float(v * data[idx]["scores"][m]) for v, idx in zip(v_weights, sampled_indices)] for m in models})
 
     return results

@@ -11,16 +11,18 @@ def _fit_2pl_irt(Y: np.ndarray) -> tuple:
     eps = 1e-8
 
     mean_p = np.clip(Y.mean(axis=0), eps, 1 - eps)
-    x0 = np.concatenate([
-        np.ones(n_items),                  # a
-        -np.log(mean_p / (1 - mean_p)),    # b
-        np.zeros(n_models),                # theta
-    ])
+    x0 = np.concatenate(
+        [
+            np.ones(n_items),  # a
+            -np.log(mean_p / (1 - mean_p)),  # b
+            np.zeros(n_models),  # theta
+        ]
+    )
 
     def nll(x):
         a = x[:n_items]
-        b = x[n_items:2 * n_items]
-        theta = x[2 * n_items:]
+        b = x[n_items : 2 * n_items]
+        theta = x[2 * n_items :]
         logits = a[None, :] * (theta[:, None] - b[None, :])
         p = np.clip(1 / (1 + np.exp(-np.clip(logits, -30, 30))), eps, 1 - eps)
         return -(Y * np.log(p) + (1 - Y) * np.log(1 - p)).sum()
@@ -28,14 +30,14 @@ def _fit_2pl_irt(Y: np.ndarray) -> tuple:
     res = minimize(nll, x0, method="L-BFGS-B", options={"maxiter": 500})
     x = res.x
     a = x[:n_items]
-    b = x[n_items:2 * n_items]
-    theta = x[2 * n_items:]
+    b = x[n_items : 2 * n_items]
+    theta = x[2 * n_items :]
     return a, b, theta
 
 
 def irt_chatbots_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
     """Approximate pairwise comparison with a single binary threshold c = mean(S).
-      Fit general 2PL and then prompts selected by their fitted discrimination `a`.
+    Fit general 2PL and then prompts selected by their fitted discrimination `a`.
     """
     models = list(data[0]["scores"].keys())
     metric = next(iter(data[0]["scores_metrics"][models[0]]))

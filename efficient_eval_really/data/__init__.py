@@ -5,7 +5,12 @@ from efficient_eval_really.methods import Data
 
 
 def load_data_synth(
-    seed=0, models=20, items=500, heteroscedastic=False, bins=None, embedding_dim=64,
+    seed=0,
+    models=20,
+    items=500,
+    heteroscedastic=False,
+    bins=None,
+    embedding_dim=64,
 ) -> Data:
     import numpy as np
 
@@ -40,8 +45,17 @@ def load_data_synth(
         emb_norm = float(np.linalg.norm(emb))
         emb = (emb / (emb_norm if emb_norm > 0 else 1.0)).tolist()
 
-        data_out.append({"scores": scores_dict, "scores_metrics": scores_metric_dict, "cost": 1, "embedding": emb, "domain": "synth"})
+        data_out.append(
+            {
+                "scores": scores_dict,
+                "scores_metrics": scores_metric_dict,
+                "cost": 1,
+                "embedding": emb,
+                "domain": "synth",
+            }
+        )
     return data_out
+
 
 def load_data_subset2evaluate_translation():
     import subset2evaluate.utils
@@ -49,14 +63,18 @@ def load_data_subset2evaluate_translation():
     data = subset2evaluate.utils.load_data_wmt("wmt25", "en-cs_CZ")
     data_new = []
     for line in data:
-        data_new.append({
-            "src": line["src"], "tgt": line["tgt"],
-            "scores": {model: line["scores"][model]["human"]/100 for model in line["scores"]},
-            "scores_metrics": {model: {"metric": line["scores"][model]["MetricX-25"]} for model in line["scores"]},
-            "cost": 1,
-            "domain": "wmt25/en-cs",
-        })
+        data_new.append(
+            {
+                "src": line["src"],
+                "tgt": line["tgt"],
+                "scores": {model: line["scores"][model]["human"] / 100 for model in line["scores"]},
+                "scores_metrics": {model: {"metric": line["scores"][model]["MetricX-25"]} for model in line["scores"]},
+                "cost": 1,
+                "domain": "wmt25/en-cs",
+            }
+        )
     return data_new
+
 
 def load_data_subset2evaluate_summeval():
     import subset2evaluate.utils
@@ -64,22 +82,25 @@ def load_data_subset2evaluate_summeval():
     data = subset2evaluate.utils.load_data_summeval(normalize=False, load_extra=False)
     data_new = []
     for line in data:
-        data_new.append({
-            "src": line["src"], "tgt": line["tgt"],
-            "scores": {model: line["scores"][model]["human_overall"] for model in line["scores"]},
-            "scores_metrics": {model: {"metric": line["scores"][model]["unieval_overall"]} for model in line["scores"]},
-            "cost": 1,
-            "domain": "summeval",
-        })
+        data_new.append(
+            {
+                "src": line["src"],
+                "tgt": line["tgt"],
+                "scores": {model: line["scores"][model]["human_overall"] for model in line["scores"]},
+                "scores_metrics": {model: {"metric": line["scores"][model]["unieval_overall"]} for model in line["scores"]},
+                "cost": 1,
+                "domain": "summeval",
+            }
+        )
     return data_new
 
 
-load_data_synth_binary : Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 1])
-load_data_synth_likert : Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 0.25, 0.5, 0.75, 1])
-load_data_synth_hetero : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=True)
-load_data_synth_homo : Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=False)
-load_data_synth_5models : Callable[..., Data] = functools.partial(load_data_synth, models=5, heteroscedastic=False)
-load_data_synth_200models : Callable[..., Data] = functools.partial(load_data_synth, models=200, heteroscedastic=False)
+load_data_synth_binary: Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 1])
+load_data_synth_likert: Callable[..., Data] = functools.partial(load_data_synth, bins=[0, 0.25, 0.5, 0.75, 1])
+load_data_synth_hetero: Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=True)
+load_data_synth_homo: Callable[..., Data] = functools.partial(load_data_synth, heteroscedastic=False)
+load_data_synth_5models: Callable[..., Data] = functools.partial(load_data_synth, models=5, heteroscedastic=False)
+load_data_synth_200models: Callable[..., Data] = functools.partial(load_data_synth, models=200, heteroscedastic=False)
 
 
 # TODO: some selector for src-based? or maybe the method should return None if it isn't supported?
@@ -95,5 +116,10 @@ _DATA: dict[str, Callable[[], Data]] = {
     # "Summarization": load_data_subset2evaluate_summeval,
 }
 
+
 def get_data_dict_all() -> dict[str, Data]:
     return {k: v() for k, v in _DATA.items()}
+
+
+def shuffle_items(data: Data, seed: int) -> Data:
+    pass

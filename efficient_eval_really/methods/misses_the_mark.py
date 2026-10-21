@@ -46,7 +46,7 @@ def misses_the_mark_budgets(
         N = len(rest_indices)
 
         x_train = S_metric[coreset_indices, :]  # (coreset_size, n_models)
-        x_test = S_metric[rest_indices, :]      # (N, n_models)
+        x_test = S_metric[rest_indices, :]  # (N, n_models)
 
         model_scores = {}
         for m_idx, m in enumerate(models):
@@ -59,9 +59,7 @@ def misses_the_mark_budgets(
             y_pred_test = rgs.predict(x_test).squeeze()
 
             # AIPW estimator: ppi = mean(y_train) + (mean(y_pred_test) - mean(y_pred_train)) / (1 + n / N)
-            ppi_part = float(
-                np.mean(y_train) + (np.mean(y_pred_test) - np.mean(y_pred_train)) / (1.0 + n / max(1, N))
-            )
+            ppi_part = float(np.mean(y_train) + (np.mean(y_pred_test) - np.mean(y_pred_train)) / (1.0 + n / max(1, N)))
             model_scores[m] = [ppi_part]
 
         results.append(model_scores)

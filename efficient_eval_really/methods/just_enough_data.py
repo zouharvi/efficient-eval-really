@@ -40,10 +40,7 @@ def just_enough_data_budgets(
 
         while active_models and cost + len(active_models) * batch_size <= budget:
             means = {m: float(np.mean(model_scores[m])) for m in models}
-            stds = {
-                m: float(np.std(model_scores[m], ddof=1)) if len(model_scores[m]) > 1 else 0.1
-                for m in models
-            }
+            stds = {m: float(np.std(model_scores[m], ddof=1)) if len(model_scores[m]) > 1 else 0.1 for m in models}
             se = {m: stds[m] / np.sqrt(len(model_scores[m])) for m in models}
 
             # Freeze models that are statistically separated from all others or exhausted

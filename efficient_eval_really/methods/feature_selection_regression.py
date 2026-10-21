@@ -55,11 +55,8 @@ class MRMRPred:
         Returns:
             Fitted regressor with a sklearn-compatible .predict() method.
         """
-        
-        alphas = (
-            np.logspace(-1, 1, 5) if self._binary
-            else np.logspace(-2, 2, 9)
-        )
+
+        alphas = np.logspace(-1, 1, 5) if self._binary else np.logspace(-2, 2, 9)
         self.alpha_range_ = (float(alphas.min()), float(alphas.max()))
 
         if self.regressor == "kernel_ridge":
@@ -91,24 +88,25 @@ class MRMRPred:
 
         p1 = np.array([n - s1, s1]) / n
         p2 = np.array([n - s2, s2]) / n
-        p_joint = np.array([
-            [n - s1 - s2 + s11, s2 - s11],
-            [s1 - s11,          s11],
-        ]) / n
+        p_joint = (
+            np.array(
+                [
+                    [n - s1 - s2 + s11, s2 - s11],
+                    [s1 - s11, s11],
+                ]
+            )
+            / n
+        )
 
         mi = 0.0
         for i in range(2):
             for j in range(2):
                 if p_joint[i, j] > 0:
-                    mi += p_joint[i, j] * np.log(
-                        p_joint[i, j] / (p1[i] * p2[j] + 1e-15)
-                    )
+                    mi += p_joint[i, j] * np.log(p_joint[i, j] / (p1[i] * p2[j] + 1e-15))
         return max(0.0, mi)
 
     @staticmethod
-    def _mutual_information_discrete_discrete_batch(
-        X: np.ndarray, x2: np.ndarray
-    ) -> np.ndarray:
+    def _mutual_information_discrete_discrete_batch(X: np.ndarray, x2: np.ndarray) -> np.ndarray:
         """Vectorised MI between each column of X and a single vector x2 (all binary).
         Returns:
             Array of MI values of shape (n_features,)
@@ -119,9 +117,9 @@ class MRMRPred:
 
         x2 = x2.astype(np.float64)
 
-        s1 = X.sum(axis=0)            # (n_features,)
-        s2 = x2.sum()                  # scalar
-        s11 = X.T @ x2                 # (n_features,)
+        s1 = X.sum(axis=0)  # (n_features,)
+        s2 = x2.sum()  # scalar
+        s11 = X.T @ x2  # (n_features,)
 
         p1_1 = s1 / n
         p1_0 = 1.0 - p1_1
@@ -148,9 +146,7 @@ class MRMRPred:
         return np.maximum(mi, 0.0)
 
     @staticmethod
-    def _mutual_information_ross_estimator(
-        x: np.ndarray, y: np.ndarray, k: int = 5
-    ) -> float:
+    def _mutual_information_ross_estimator(x: np.ndarray, y: np.ndarray, k: int = 5) -> float:
         """Ross (2014) estimator for MI between binary x and continuous y.
 
         Args:
@@ -187,9 +183,7 @@ class MRMRPred:
             # Use max distance to capture all neighbors within that radius
             max_dist = np.max(dist)
             # Count neighbors in ALL classes within the same radius
-            m = tree_all.query_ball_point(
-                val.reshape(1, -1), max_dist - 1e-15, return_length=True
-            )
+            m = tree_all.query_ball_point(val.reshape(1, -1), max_dist - 1e-15, return_length=True)
             m_list.append(m)
 
         avg_psi_nx = (nx0 * psi(nx0) + nx1 * psi(nx1)) / n
@@ -207,9 +201,7 @@ class MRMRPred:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _mutual_information_lnc(
-        x: np.ndarray, y: np.ndarray, k: int = 8, alpha: float = 0.25
-    ) -> float:
+    def _mutual_information_lnc(x: np.ndarray, y: np.ndarray, k: int = 8, alpha: float = 0.25) -> float:
         """Fast continuous MI via Gaussian copula / correlation proxy."""
         x = np.asarray(x, dtype=np.float64).ravel()
         y = np.asarray(y, dtype=np.float64).ravel()
@@ -224,19 +216,17 @@ class MRMRPred:
             return 0.0
         rho = float(np.dot(x_c, y_c) / norm)
         rho = min(0.9999, max(-0.9999, rho))
-        return float(-0.5 * np.log(max(1e-12, 1.0 - rho ** 2)))
+        return float(-0.5 * np.log(max(1e-12, 1.0 - rho**2)))
 
     @staticmethod
-    def _mutual_information_lnc_batch(
-        X: np.ndarray, x2: np.ndarray, k: int = 8, alpha: float = 0.25
-    ) -> np.ndarray:
+    def _mutual_information_lnc_batch(X: np.ndarray, x2: np.ndarray, k: int = 8, alpha: float = 0.25) -> np.ndarray:
         """Vectorized batch MI between each column of X and vector x2."""
         X_c = X - np.mean(X, axis=0, keepdims=True)
         x2_c = x2 - np.mean(x2)
         norms = np.linalg.norm(X_c, axis=0) * (np.linalg.norm(x2_c) + 1e-12) + 1e-12
         rhos = (X_c.T @ x2_c) / norms
         rhos = np.clip(rhos, -0.9999, 0.9999)
-        return -0.5 * np.log(np.maximum(1e-12, 1.0 - rhos ** 2))
+        return -0.5 * np.log(np.maximum(1e-12, 1.0 - rhos**2))
 
     def _get_mi_estimators(self, binary: bool):
         """Return (relevance_fn, redundancy_batch_fn) for MI estimation.
@@ -257,18 +247,12 @@ class MRMRPred:
         """
         if binary:
             return (
-                lambda x, y: self._mutual_information_ross_estimator(
-                    x, y, k=self.binary_mi_k
-                ),
+                lambda x, y: self._mutual_information_ross_estimator(x, y, k=self.binary_mi_k),
                 self._mutual_information_discrete_discrete_batch,
             )
         return (
-            lambda x, y: self._mutual_information_lnc(
-                x, y, k=self.continuous_mi_k
-            ),
-            lambda X, x2: self._mutual_information_lnc_batch(
-                X, x2, k=self.continuous_mi_k
-            ),
+            lambda x, y: self._mutual_information_lnc(x, y, k=self.continuous_mi_k),
+            lambda X, x2: self._mutual_information_lnc_batch(X, x2, k=self.continuous_mi_k),
         )
 
     def fit(
@@ -312,12 +296,7 @@ class MRMRPred:
         relevance_target = source_full_scores.mean(-1)
 
         # Precompute relevance for every point (MI with relevance_target); it does not change during selection
-        relevance_per_idx = np.array(
-            [
-                mi_rel(source_full_scores[:, idx], relevance_target)
-                for idx in range(num_data)
-            ]
-        )
+        relevance_per_idx = np.array([mi_rel(source_full_scores[:, idx], relevance_target) for idx in range(num_data)])
 
         if self.method == "relevance":
             remaining_set: set[int] = set(range(num_data))
@@ -354,9 +333,7 @@ class MRMRPred:
 
         # Update redundancy sums: add MI(each remaining, newly selected) for the first selection
         remaining_arr = np.array(sorted(remaining_indices))
-        redundancy_sum[remaining_arr] += mi_red_batch(
-            source_full_scores[:, remaining_arr], source_full_scores[:, best_idx]
-        )
+        redundancy_sum[remaining_arr] += mi_red_batch(source_full_scores[:, remaining_arr], source_full_scores[:, best_idx])
 
         # Greedy selection of remaining features
         for _ in range(1, coreset_size):
@@ -380,9 +357,7 @@ class MRMRPred:
 
             remaining_arr = np.array(sorted(remaining_indices))
             if len(remaining_arr) > 0:
-                redundancy_sum[remaining_arr] += mi_red_batch(
-                    source_full_scores[:, remaining_arr], source_full_scores[:, best_idx]
-                )
+                redundancy_sum[remaining_arr] += mi_red_batch(source_full_scores[:, remaining_arr], source_full_scores[:, best_idx])
 
         self.compressed_data_indices = np.array(selected_indices)
         return self
@@ -437,7 +412,7 @@ def feature_selection_regression_budgets(
     metric: str = "metric",
     seed: int = 42,
 ) -> ModelScoresAtBudget:
-    """This approach selects a coreset using Minimum Redundancy Maximum Relevance (mRMR). 
+    """This approach selects a coreset using Minimum Redundancy Maximum Relevance (mRMR).
 
     User options:
     - method: "mid" for relevance minus redundancy, "miq" for relevance divided
@@ -472,19 +447,12 @@ def feature_selection_regression_budgets(
     for coreset_size in coreset_sizes:
         coreset = full_coreset[:coreset_size]
         if regressor is None:
-            results.append(
-                {
-                    model: [float(true_scores[model_i, item_i]) for item_i in coreset]
-                    for model_i, model in enumerate(models)
-                }
-            )
+            results.append({model: [float(true_scores[model_i, item_i]) for item_i in coreset] for model_i, model in enumerate(models)})
         else:
             X = true_scores[:, coreset]
             y = metric_scores.mean(-1)
             predictor.fit_regressor(X, y)
             predictions = predictor.predict(X)
-            results.append(
-                {model: [float(prediction)] for model, prediction in zip(models, predictions)}
-            )
+            results.append({model: [float(prediction)] for model, prediction in zip(models, predictions)})
 
     return results

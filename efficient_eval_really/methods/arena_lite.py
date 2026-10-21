@@ -68,10 +68,7 @@ def arena_lite_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelSco
 
         if current_cost >= target_budget or item_idx >= n_items:
             rates = np.where(matches > 0, wins / matches, 0.5)
-            results_map[target_budget] = {
-                m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])]
-                for i, m in enumerate(models)
-            }
+            results_map[target_budget] = {m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])] for i, m in enumerate(models)}
             budget_idx += 1
             continue
 
@@ -112,9 +109,6 @@ def arena_lite_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelSco
     rates = np.where(matches > 0, wins / matches, 0.5)
     for b in sorted_budgets:
         if b not in results_map:
-            results_map[b] = {
-                m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])]
-                for i, m in enumerate(models)
-            }
+            results_map[b] = {m: list(model_scores[i]) if len(model_scores[i]) > 0 else [float(rates[i])] for i, m in enumerate(models)}
 
     return [results_map[b] for b in budgets]

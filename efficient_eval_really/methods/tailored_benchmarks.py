@@ -10,17 +10,16 @@ from efficient_eval_really.methods import (
 
 def _kmedoids(D: np.ndarray, k: int, seed: int = 42) -> list[int]:  # D= Distance Matrix of Items, k= number of clusters
     """Implements PAM K-Medoids on a precomputed distance matrix."""
-    n = D.shape[0] # n=number of items
-    if k >= n: # edge case with less items that desired clusters
+    n = D.shape[0]  # n=number of items
+    if k >= n:  # edge case with less items that desired clusters
         return list(range(n))
     medoids = list(np.random.default_rng(seed).choice(n, k, replace=False))
-    for _ in range(100): # at most 100 iterations of the PAM update loop
+    for _ in range(100):  # at most 100 iterations of the PAM update loop
         assignments = np.argmin(D[:, medoids], axis=1)
         new_medoids = []
         for c in range(k):
             members = np.where(assignments == c)[0]
-            new_medoids.append(medoids[c] if len(members) == 0
-                               else int(members[np.argmin(D[np.ix_(members, members)].sum(1))]))
+            new_medoids.append(medoids[c] if len(members) == 0 else int(members[np.argmin(D[np.ix_(members, members)].sum(1))]))
         if new_medoids == medoids:
             break
         medoids = new_medoids
@@ -31,6 +30,7 @@ def tailored_benchmarks_budgets(data: Data, budgets: Budgets, g_frac: float = 0.
     """TailoredBench: per-model tailored item subsets via K-Medoids."""
     from sklearn.metrics import pairwise_distances
     from sklearn.preprocessing import StandardScaler
+
     models = list(data[0]["scores"].keys())
     metric = next(iter(data[0]["scores_metrics"][models[0]]))
     S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])  # (n_items, n_models)

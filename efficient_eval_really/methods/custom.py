@@ -99,10 +99,7 @@ def weighted_sampling_with_priors_corrected(data: Data, budgets: Budgets, coldst
 
     data = list(data)
     # cold start phase
-    model_scores = {
-        model: [x["scores"][model] for x in data[:coldstart]]
-        for model in data[0]["scores"]
-    }
+    model_scores = {model: [x["scores"][model] for x in data[:coldstart]] for model in data[0]["scores"]}
     models = list(data[0]["scores"])
     cost = sum(x["cost"] for x in data[:coldstart]) * len(models)
 
@@ -129,20 +126,13 @@ def weighted_sampling_with_priors_corrected(data: Data, budgets: Budgets, coldst
                 # encode item_i one-hot
                 [x["scores_metrics"][model]["metric"]] + one_hot_item[item_i]
                 for model in list(data[0]["scores"])
-                for item_i, x in enumerate(data[:len(model_scores[model])])
+                for item_i, x in enumerate(data[: len(model_scores[model])])
             ],
-            [
-                x["scores"][model]
-                for model in list(data[0]["scores"])
-                for x in data[:len(model_scores[model])]
-            ],
+            [x["scores"][model] for model in list(data[0]["scores"]) for x in data[: len(model_scores[model])]],
         )
         # predict missing values
         estimated_scores = {
-            model: list(estimator_model.predict([
-                [x["scores_metrics"][model]["metric"]] + one_hot_item[item_i]
-                for item_i, x in enumerate(data)
-            ])) # type: ignore
+            model: list(estimator_model.predict([[x["scores_metrics"][model]["metric"]] + one_hot_item[item_i] for item_i, x in enumerate(data)]))  # type: ignore
             for model in models
         }
 
@@ -150,26 +140,21 @@ def weighted_sampling_with_priors_corrected(data: Data, budgets: Budgets, coldst
         for _ in range(batch_size):
             model_estimate = {
                 # use predictions for the missing values
-                model: statistics.mean(model_scores[model] + estimated_scores[model][len(model_scores[model]):])
+                model: statistics.mean(model_scores[model] + estimated_scores[model][len(model_scores[model]) :])
                 for model in models
             }
             models.sort(key=model_estimate.get, reverse=True)  # type: ignore
 
             model = random.choices(
                 models,
-                weights=[
-                    1 / (rank + 1)
-                    for model, rank in zip(models, range(len(models)))
-                ],
+                weights=[1 / (rank + 1) for model, rank in zip(models, range(len(models)))],
                 k=1,
             )[0]
             item = data[len(model_scores[model])]
             model_scores[model].append(item["scores"][model])
             cost += item["cost"]
 
-            models = [
-                model for model in model_scores if len(model_scores[model]) < len(data)
-            ]
+            models = [model for model in model_scores if len(model_scores[model]) < len(data)]
             if not models:
                 break
     return output

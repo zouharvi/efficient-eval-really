@@ -65,9 +65,7 @@ def llm_selector_budgets(
             available.remove(picked_item)
             current_cost += float(costs[picked_item] * n_models)
 
-        results_map[b] = {
-            m: [data[i]["scores"][m] for i in selected_items] for m in models
-        }
+        results_map[b] = {m: [data[i]["scores"][m] for i in selected_items] for m in models}
 
     return [results_map[b] for b in budgets]
 
@@ -133,8 +131,6 @@ def select_llm_budgets(
             available.remove(picked_item)
             current_cost += float(costs[picked_item] * n_models)
 
-        results_map[b] = {
-            m: [data[i]["scores"][m] for i in selected_items] for m in models
-        }
+        results_map[b] = {m: [data[i]["scores"][m] for i in selected_items] for m in models}
 
     return [results_map[b] for b in budgets]

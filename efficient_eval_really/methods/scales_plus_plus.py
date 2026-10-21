@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
@@ -50,6 +51,7 @@ def scales_plus_plus_budgets(
             continue
 
         import warnings
+
         from sklearn.exceptions import ConvergenceWarning
 
         with warnings.catch_warnings():
@@ -62,9 +64,6 @@ def scales_plus_plus_budgets(
         dists = np.linalg.norm(X[:, None, :] - centers[None, :, :], axis=2)
         coreset = np.argmin(dists, axis=0).tolist()
 
-        results.append({
-            m: [float(data[idx]["scores"][m]) for idx in coreset]
-            for m in models
-        })
+        results.append({m: [float(data[idx]["scores"][m]) for idx in coreset] for m in models})
 
     return results

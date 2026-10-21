@@ -61,9 +61,6 @@ def iq_test_llms_budgets(
             continue
 
         coreset = selected[:k]
-        results.append({
-            m: [float(data[idx]["scores"][m]) for idx in coreset]
-            for m in models
-        })
+        results.append({m: [float(data[idx]["scores"][m]) for idx in coreset] for m in models})
 
     return results

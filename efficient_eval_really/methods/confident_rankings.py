@@ -53,7 +53,7 @@ def confident_rankings_budgets(
     # Phase 1: Warm-up
     warmup_k = min(max(2, n_init), n_items)
     p_0 = 1.0 / (1.0 + np.exp(a * b))
-    fisher_0 = (a ** 2) * p_0 * (1.0 - p_0)
+    fisher_0 = (a**2) * p_0 * (1.0 - p_0)
     top_warmup = np.argsort(fisher_0)[::-1][:warmup_k]
 
     for m_idx in range(n_models):
@@ -118,7 +118,7 @@ def confident_rankings_budgets(
                 b_av = b[av_items]
                 logits = a_av * (thetas[target_m] - b_av)
                 p = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
-                fisher = (a_av ** 2) * p * (1.0 - p)
+                fisher = (a_av**2) * p * (1.0 - p)
                 best_item = av_items[np.argmax(fisher)]
 
                 # Administer item

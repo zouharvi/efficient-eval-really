@@ -101,10 +101,7 @@ def cost_aware_gittins_budgets(
                 break
 
             # Gittins index: G_k = mu_k - r_{n_k}
-            gittins_indices = np.array([
-                mu[k] - roots[min(n_pulls[k], n_items - 1)]
-                for k in avail
-            ])
+            gittins_indices = np.array([mu[k] - roots[min(n_pulls[k], n_items - 1)] for k in avail])
 
             chosen_idx = avail[int(np.argmax(gittins_indices))]
             item_idx = item_indices[chosen_idx]
@@ -118,9 +115,6 @@ def cost_aware_gittins_budgets(
             current_cost += costs_arr[item_idx]
             item_indices[chosen_idx] += 1
 
-        results_map[budget] = {
-            m: list(model_scores[i]) if len(model_scores[i]) > 0 else [mu0]
-            for i, m in enumerate(models)
-        }
+        results_map[budget] = {m: list(model_scores[i]) if len(model_scores[i]) > 0 else [mu0] for i, m in enumerate(models)}
 
     return [results_map[b] for b in budgets]

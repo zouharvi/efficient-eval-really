@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.cluster.hierarchy
 from sklearn.metrics.pairwise import cosine_distances
+
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
@@ -59,9 +60,6 @@ def diffuse_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
             best_member = int(members[np.argmin(dists)])
             coreset.append(best_member)
 
-        results.append({
-            m: [float(data[idx]["scores"][m]) for idx in coreset]
-            for m in models
-        })
+        results.append({m: [float(data[idx]["scores"][m]) for idx in coreset] for m in models})
 
     return results

@@ -59,7 +59,7 @@ def _fit_psn_irt(
     optimizer = torch.optim.Adam(psn.parameters(), lr=lr, weight_decay=1e-4)
     criterion = nn.BCELoss()
 
-    # Build (model_idx, item_idx, label) triplets 
+    # Build (model_idx, item_idx, label) triplets
     rows, cols = np.where(~np.isnan(Y))
     labels = Y[rows, cols].astype(np.float32)
     perm = np.random.default_rng(seed).permutation(len(rows))
@@ -107,39 +107,41 @@ def _fit_psn_irt(
 
 
 def _fit_4pl_irt(Y: np.ndarray) -> tuple:
-    """Fit 4PL IRT via MLE on Y """
+    """Fit 4PL IRT via MLE on Y"""
     from scipy.optimize import minimize
 
     n_models, n_items = Y.shape
     eps = 1e-8
 
     mean_p = np.clip(Y.mean(axis=0), eps, 1 - eps)
-    x0 = np.concatenate([
-        np.ones(n_items),                            # a
-        -np.log(mean_p / (1 - mean_p)),              # b
-        np.full(n_items, -3.0),                      # raw_c  
-        np.full(n_items, 3.0),                       # raw_d  
-        np.zeros(n_models),                          # theta
-    ])
+    x0 = np.concatenate(
+        [
+            np.ones(n_items),  # a
+            -np.log(mean_p / (1 - mean_p)),  # b
+            np.full(n_items, -3.0),  # raw_c
+            np.full(n_items, 3.0),  # raw_d
+            np.zeros(n_models),  # theta
+        ]
+    )
 
     def nll(x):
-        a     = x[:n_items]
-        b     = x[n_items:2 * n_items]
-        c     = 1 / (1 + np.exp(-x[2 * n_items:3 * n_items]))
-        d     = 1 / (1 + np.exp(-x[3 * n_items:4 * n_items]))
-        theta = x[4 * n_items:]
+        a = x[:n_items]
+        b = x[n_items : 2 * n_items]
+        c = 1 / (1 + np.exp(-x[2 * n_items : 3 * n_items]))
+        d = 1 / (1 + np.exp(-x[3 * n_items : 4 * n_items]))
+        theta = x[4 * n_items :]
         logits = a[None, :] * (theta[:, None] - b[None, :])
-        sig    = 1 / (1 + np.exp(-np.clip(logits, -30, 30)))
-        P      = np.clip(c[None, :] + (d - c)[None, :] * sig, eps, 1 - eps)
+        sig = 1 / (1 + np.exp(-np.clip(logits, -30, 30)))
+        P = np.clip(c[None, :] + (d - c)[None, :] * sig, eps, 1 - eps)
         return -(Y * np.log(P) + (1 - Y) * np.log(1 - P)).sum()
 
-    res   = minimize(nll, x0, method="L-BFGS-B", options={"maxiter": 500})
-    x     = res.x
-    a     = x[:n_items]
-    b     = x[n_items:2 * n_items]
-    c     = 1 / (1 + np.exp(-x[2 * n_items:3 * n_items]))
-    d     = 1 / (1 + np.exp(-x[3 * n_items:4 * n_items]))
-    theta = x[4 * n_items:]
+    res = minimize(nll, x0, method="L-BFGS-B", options={"maxiter": 500})
+    x = res.x
+    a = x[:n_items]
+    b = x[n_items : 2 * n_items]
+    c = 1 / (1 + np.exp(-x[2 * n_items : 3 * n_items]))
+    d = 1 / (1 + np.exp(-x[3 * n_items : 4 * n_items]))
+    theta = x[4 * n_items :]
     return a, b, c, d, float(theta.mean())
 
 
@@ -161,7 +163,7 @@ def _fisher_select(
     P = np.clip(P, 1e-6, 1 - 1e-6)
     d_minus_c = np.clip(d - c, 1e-6, None)
     # high a and P near middle -> high Fisher info
-    fisher = (a ** 2 * (P - c) ** 2 * (d - P) ** 2) / (d_minus_c ** 2 * P * (1 - P))
+    fisher = (a**2 * (P - c) ** 2 * (d - P) ** 2) / (d_minus_c**2 * P * (1 - P))
     order = np.argsort(fisher)[::-1]  # descending
 
     results: ModelScoresAtBudget = []
@@ -181,7 +183,7 @@ def _prepare_training_matrix(data: Data, models: list) -> tuple:
     S = np.array([[item["scores_metrics"][m][metric] for m in models] for item in data])
     n_items, n_models = S.shape
     Y = _binarize(S)  # (n_items, n_models)
-    return Y.T, n_items, n_models   
+    return Y.T, n_items, n_models
 
 
 def lost_in_benchmarks_budgets(data: Data, budgets: Budgets, method: str) -> ModelScoresAtBudget:

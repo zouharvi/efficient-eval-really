@@ -1,6 +1,7 @@
 import math
-import numpy as np
+
 import evaluation_bandit.algorithms
+import numpy as np
 
 from efficient_eval_really.methods import (
     Budget,
