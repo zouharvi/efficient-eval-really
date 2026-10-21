@@ -100,39 +100,46 @@ def confident_rankings_budgets(
             if not candidates:
                 break
 
-            # Target model selection: max SE^2 / (n + 1)
             cand_arr = np.array(candidates, dtype=int)
             marginal_var = (se[cand_arr] ** 2) / (counts[cand_arr] + 1.0)
-            target_m = cand_arr[np.argmax(marginal_var)]
+            best_cands = cand_arr[np.argsort(-marginal_var)]
+            batch_limit = min(max(10, min(100, n_models // 2)), int(budget - cost) + 1)
+            added = 0
 
-            # Available items for target_m
-            av_items = np.where(~used_mask[target_m])[0]
-            if len(av_items) == 0:
+            for target_m in best_cands[:batch_limit]:
+                if cost >= budget:
+                    break
+                av_items = np.where(~used_mask[target_m])[0]
+                if len(av_items) == 0:
+                    continue
+
+                # Fisher information selection
+                a_av = a[av_items]
+                b_av = b[av_items]
+                logits = a_av * (thetas[target_m] - b_av)
+                p = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
+                fisher = (a_av ** 2) * p * (1.0 - p)
+                best_item = av_items[np.argmax(fisher)]
+
+                # Administer item
+                sc = scores_mat[best_item, target_m]
+                model_scores[target_m].append(sc)
+                used_mask[target_m, best_item] = True
+                counts[target_m] += 1
+                sums[target_m] += sc
+                sum_sqs[target_m] += sc * sc
+                cost += costs_arr[best_item]
+                added += 1
+
+                thetas[target_m] = sums[target_m] / counts[target_m]
+                if counts[target_m] > 1:
+                    var = max(1e-8, (sum_sqs[target_m] - (sums[target_m] ** 2) / counts[target_m]) / (counts[target_m] - 1))
+                    se[target_m] = np.sqrt(var / counts[target_m])
+                else:
+                    se[target_m] = 0.5
+
+            if added == 0:
                 break
-
-            # Fisher information selection
-            a_av = a[av_items]
-            b_av = b[av_items]
-            logits = a_av * (thetas[target_m] - b_av)
-            p = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
-            fisher = (a_av ** 2) * p * (1.0 - p)
-            best_item = av_items[np.argmax(fisher)]
-
-            # Administer item
-            sc = scores_mat[best_item, target_m]
-            model_scores[target_m].append(sc)
-            used_mask[target_m, best_item] = True
-            counts[target_m] += 1
-            sums[target_m] += sc
-            sum_sqs[target_m] += sc * sc
-            cost += costs_arr[best_item]
-
-            thetas[target_m] = sums[target_m] / counts[target_m]
-            if counts[target_m] > 1:
-                var = max(1e-8, (sum_sqs[target_m] - (sums[target_m] ** 2) / counts[target_m]) / (counts[target_m] - 1))
-                se[target_m] = np.sqrt(var / counts[target_m])
-            else:
-                se[target_m] = 0.5
 
         # Snapshot for this budget level
         results_map[budget] = {models[i]: list(model_scores[i]) for i in range(n_models)}

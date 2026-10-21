@@ -5,64 +5,89 @@ from collections.abc import Callable
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
-def weighted_sampling_with_priors(data: Data, budgets: Budgets, gamma: float = 0.95, coldstart=5) -> ModelScoresAtBudget:
+def weighted_sampling_with_priors(data: Data, budgets: Budgets, gamma: float = 0.95, coldstart=5, seed=42) -> ModelScoresAtBudget:
     """
     gamma [0, 1]: how much of the ranking is based on human evaluations only as opposed to metrics
     """
+    import numpy as np
+
+    rng = np.random.default_rng(seed)
     data = list(data)
-    # cold start phase
-    model_scores = {
-        model: [x["scores"][model] for x in data[:coldstart]]
-        for model in data[0]["scores"]
-    }
-    models = list(data[0]["scores"])
-    cost = sum(x["cost"] for x in data[:coldstart]) * len(models)
+    models = list(data[0]["scores"].keys())
+    n_models = len(models)
+    n_items = len(data)
 
-    def _scores_to_ranking(model_scores) -> dict[str, int]:
-        model_estimate = {
-            model: statistics.mean(model_scores[model])
-            for model in models
-        }
-        # output rankg 0, 1, 2, ... with 0 being the best model
-        return {model: rank for rank, model in enumerate(sorted(model_estimate, key=model_estimate.get, reverse=True))} # type: ignore
+    scores_mat = np.array([[item["scores"][m] for m in models] for item in data], dtype=float)
+    costs_arr = np.array([item["cost"] for item in data], dtype=float)
 
-        
-    ranking_metrics = _scores_to_ranking({model: [x["scores_metrics"][model]["metric"] for x in data] for model in models})
+    metric_key = next(iter(data[0]["scores_metrics"][models[0]]))
+    metrics_mat = np.array([[item["scores_metrics"][m][metric_key] for m in models] for item in data], dtype=float)
+    metrics_mean = np.mean(metrics_mat, axis=0)
+    # Ranks: 0 is highest metric score
+    ranking_metrics = np.zeros(n_models, dtype=float)
+    ranking_metrics[np.argsort(-metrics_mean)] = np.arange(n_models)
 
-    output = []
-    # active learning phase
-    while budgets:
-        if cost >= budgets[0] or not models:
-            budgets = budgets[1:]
-            output.append({model: list(model_scores[model]) for model in model_scores})
-            continue
+    model_scores = [[] for _ in range(n_models)]
+    sums = np.zeros(n_models, dtype=float)
+    counts = np.zeros(n_models, dtype=int)
+    cost = 0.0
 
-        ranking_real = _scores_to_ranking(model_scores)
-        # TODO: this needs to be better
-        # decay gamma as we get closer to the budget
-        gamma_now = gamma ** (cost / budgets[0])
-        model_estimate = {
-            model: (gamma_now * ranking_real[model]) + ((1 - gamma_now) * ranking_metrics[model])
-            for model in models
-        }
-        models.sort(key=model_estimate.get, reverse=True)  # type: ignore
+    k_cold = min(coldstart, n_items)
+    for m in range(n_models):
+        for i in range(k_cold):
+            sc = scores_mat[i, m]
+            model_scores[m].append(sc)
+            sums[m] += sc
+            counts[m] += 1
+            cost += costs_arr[i]
 
-        model = random.choices(
-            models,
-            weights=[
-                1 / (rank + 1)
-                for model, rank in zip(models, range(len(models)))
-            ],
-            k=1,
-        )[0]
-        item = data[len(model_scores[model])]
-        model_scores[model].append(item["scores"][model])
-        cost += item["cost"]
+    results_map = {}
+    sorted_budgets = sorted(set(budgets))
+    BATCH_SIZE = max(10, min(100, n_models // 2))
 
-        models = [
-            model for model in model_scores if len(model_scores[model]) < len(data)
-        ]
-    return output
+    for b in sorted_budgets:
+        while cost < b:
+            avail = np.where(counts < n_items)[0]
+            if len(avail) == 0:
+                break
+
+            means = sums[avail] / counts[avail]
+            # Empirical ranking among available models
+            ranking_real = np.zeros(len(avail), dtype=float)
+            ranking_real[np.argsort(-means)] = np.arange(len(avail))
+
+            gamma_now = gamma ** (cost / b)
+            model_est = (gamma_now * ranking_real) + ((1.0 - gamma_now) * ranking_metrics[avail])
+            order = avail[np.argsort(model_est)]
+
+            n_avail = len(order)
+            weights = 1.0 / (np.arange(n_avail) + 1.0)
+            probs = weights / np.sum(weights)
+
+            batch_limit = min(BATCH_SIZE, int(b - cost) + 1)
+            chosen_indices = rng.choice(n_avail, size=batch_limit, p=probs)
+            added = 0
+
+            for idx in chosen_indices:
+                if cost >= b:
+                    break
+                m = order[idx]
+                if counts[m] >= n_items:
+                    continue
+                item_idx = counts[m]
+                sc = scores_mat[item_idx, m]
+                model_scores[m].append(sc)
+                sums[m] += sc
+                counts[m] += 1
+                cost += costs_arr[item_idx]
+                added += 1
+
+            if added == 0:
+                break
+
+        results_map[b] = {models[i]: list(model_scores[i]) for i in range(n_models)}
+
+    return [results_map[b] for b in budgets]
 
 
 def weighted_sampling_with_priors_corrected(data: Data, budgets: Budgets, coldstart: int = 5, batch_size: int = 10) -> ModelScoresAtBudget:

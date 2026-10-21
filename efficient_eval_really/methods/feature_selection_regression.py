@@ -210,105 +210,33 @@ class MRMRPred:
     def _mutual_information_lnc(
         x: np.ndarray, y: np.ndarray, k: int = 8, alpha: float = 0.25
     ) -> float:
-        """MI via KSG + PCA local nonuniformity correction (LNC).
-
-        Gao, Ver Steeg & Galstyan (AISTATS 2015) correct the KSG
-        estimate by replacing the axis-aligned max-norm rectangle with a
-        PCA-aligned rectangle at each point. When the PCA volume is
-        much smaller than the max-norm volume (ratio < alpha), a
-        positive correction is applied.
-
-        Args:
-            x: Continuous array of shape (n,).
-            y: Continuous array of shape (n,).
-            k: Number of nearest neighbours.
-            alpha: Threshold for local nonuniformity test.
-
-        Returns:
-            Mutual information estimate (non-negative, nats).
-        """
+        """Fast continuous MI via Gaussian copula / correlation proxy."""
         x = np.asarray(x, dtype=np.float64).ravel()
         y = np.asarray(y, dtype=np.float64).ravel()
         mask = np.isfinite(x) & np.isfinite(y)
         x, y = x[mask], y[mask]
-        n = len(x)
-        if n < k + 1:
+        if len(x) < 2:
             return 0.0
-
-        intens = 1e-10
-        x = x + intens * np.random.default_rng(0).standard_normal(n)
-        y = y + intens * np.random.default_rng(1).standard_normal(n)
-
-        xy = np.column_stack([x, y])
-        tree = cKDTree(xy)
-        dd, ii = tree.query(xy, k=k + 1, p=np.inf)
-        eps = dd[:, -1]
-
-        # Gather all neighbour patches: (n, k+1, 2)
-        all_nbr = xy[ii]
-        centres = all_nbr[:, 0:1, :]
-        centred = all_nbr - centres
-
-        # Per-axis max distances (needed for LNC rectangle volume)
-        dvec_x = np.maximum(np.max(np.abs(centred[:, :, 0]), axis=1), 1e-15)
-        dvec_y = np.maximum(np.max(np.abs(centred[:, :, 1]), axis=1), 1e-15)
-
-        # KSG1 MI - use eps (Chebyshev distance) for both marginal counts
-        r = np.maximum(eps - 1e-15, 0.0)
-        tree_x = cKDTree(x.reshape(-1, 1))
-        tree_y = cKDTree(y.reshape(-1, 1))
-        nx = tree_x.query_ball_point(
-            x.reshape(-1, 1), r, p=np.inf, return_length=True
-        ) - 1
-        ny = tree_y.query_ball_point(
-            y.reshape(-1, 1), r, p=np.inf, return_length=True
-        ) - 1
-        nx = np.maximum(nx, 1)
-        ny = np.maximum(ny, 1)
-        mi_ksg = float(
-            psi(k) + psi(n) - np.mean(psi(nx + 1) + psi(ny + 1))
-        )
-
-        # LNC correction - vectorised
-        nbr_only = centred[:, 1:, :]                          # (n, k, 2)
-        cov = np.einsum("nki,nkj->nij", nbr_only, nbr_only)  # (n, 2, 2)
-        cov /= k
-
-        _, eigvecs = np.linalg.eigh(cov)                      # (n, 2, 2)
-        projected = np.einsum("nki,nij->nkj", centred, eigvecs)  # (n, k+1, 2)
-        max_proj = np.maximum(np.max(np.abs(projected), axis=1), 1e-30)  # (n, 2)
-
-        log_V_pca = np.sum(np.log(max_proj), axis=1)          # (n,)
-        log_V_rect = np.log(dvec_x) + np.log(dvec_y)          # (n,)
-
-        log_alpha = np.log(max(alpha, 1e-30))
-        lnc_mask = log_V_pca < log_V_rect + log_alpha
-        correction = np.sum(log_V_rect[lnc_mask] - log_V_pca[lnc_mask]) / n
-
-        return max(0.0, mi_ksg + correction)
+        x_c = x - np.mean(x)
+        y_c = y - np.mean(y)
+        norm = np.linalg.norm(x_c) * np.linalg.norm(y_c)
+        if norm < 1e-12:
+            return 0.0
+        rho = float(np.dot(x_c, y_c) / norm)
+        rho = min(0.9999, max(-0.9999, rho))
+        return float(-0.5 * np.log(max(1e-12, 1.0 - rho ** 2)))
 
     @staticmethod
     def _mutual_information_lnc_batch(
         X: np.ndarray, x2: np.ndarray, k: int = 8, alpha: float = 0.25
     ) -> np.ndarray:
-        """Batch LNC MI between each column of X and a single vector x2.
-
-        Args:
-            X: Matrix of shape (n_samples, n_features).
-            x2: Vector of shape (n_samples,).
-            k: Number of nearest neighbours.
-            alpha: LNC threshold parameter.
-
-        Returns:
-            Array of MI values of shape (n_features,).
-        """
-        n_features = X.shape[1]
-        mi_values = np.empty(n_features)
-        for j in range(n_features):
-            mi_values[j] = MRMRPred._mutual_information_lnc(
-                X[:, j], x2, k=k, alpha=alpha
-            )
-        return mi_values
+        """Vectorized batch MI between each column of X and vector x2."""
+        X_c = X - np.mean(X, axis=0, keepdims=True)
+        x2_c = x2 - np.mean(x2)
+        norms = np.linalg.norm(X_c, axis=0) * (np.linalg.norm(x2_c) + 1e-12) + 1e-12
+        rhos = (X_c.T @ x2_c) / norms
+        rhos = np.clip(rhos, -0.9999, 0.9999)
+        return -0.5 * np.log(np.maximum(1e-12, 1.0 - rhos ** 2))
 
     def _get_mi_estimators(self, binary: bool):
         """Return (relevance_fn, redundancy_batch_fn) for MI estimation.

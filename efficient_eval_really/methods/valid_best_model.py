@@ -26,37 +26,42 @@ def valid_best_model_budgets(
     n_models = len(models)
     n_items = len(data)
 
-    results: ModelScoresAtBudget = []
-    for budget in budgets:
-        observed = np.zeros((n_models, n_items), dtype=bool)
-        scores_matrix = np.zeros((n_models, n_items), dtype=float)
-        cost = 0.0
+    scores_mat = np.array([[item["scores"][m] for m in models] for item in data], dtype=float)
+    costs_arr = np.array([item["cost"] for item in data], dtype=float)
 
-        # Stage 1: Warm-up phase
-        n_warmup = min(max(2, int(0.05 * n_items)), n_items)
-        for m_idx in range(n_models):
-            items_w = rng.choice(n_items, size=n_warmup, replace=False)
-            for j in items_w:
-                scores_matrix[m_idx, j] = float(data[j]["scores"][models[m_idx]])
-                observed[m_idx, j] = True
-                cost += data[j]["cost"]
+    scores_matrix = np.zeros((n_models, n_items), dtype=float)
+    observed = np.zeros((n_models, n_items), dtype=bool)
+    cost = 0.0
 
-        actual_rank = min(rank, n_models, n_warmup)
-        step = 0
-        S_hat = scores_matrix.copy()
-        R = np.ones((n_models, n_items), dtype=float)
+    # Stage 1: Warm-up phase
+    n_warmup = min(max(2, int(0.05 * n_items)), n_items)
+    for m_idx in range(n_models):
+        items_w = rng.choice(n_items, size=n_warmup, replace=False)
+        for j in items_w:
+            scores_matrix[m_idx, j] = scores_mat[j, m_idx]
+            observed[m_idx, j] = True
+            cost += costs_arr[j]
 
-        # Stage 2: Adaptive low-rank bandit selection
+    actual_rank = min(rank, n_models, n_warmup)
+    step = 0
+    S_hat = scores_matrix.copy()
+    R = np.ones((n_models, n_items), dtype=float)
+    tau_step = max(50, n_models)
+
+    results_map = {}
+    sorted_budgets = sorted(set(budgets))
+
+    # Stage 2: Adaptive low-rank bandit selection (incremental across sorted budgets)
+    for budget in sorted_budgets:
         while cost < budget:
-            # Periodically re-fit low-rank matrix completion
-            if step % tau == 0:
+            if step % tau_step == 0:
                 M = scores_matrix.copy()
+                row_obs_any = np.any(observed, axis=1)
                 for i in range(n_models):
-                    row_obs = observed[i]
-                    if np.any(row_obs):
-                        M[i, ~row_obs] = np.mean(M[i, row_obs])
+                    if row_obs_any[i]:
+                        M[i, ~observed[i]] = np.mean(M[i, observed[i]])
                     else:
-                        M[i, ~row_obs] = 0.5
+                        M[i, ~observed[i]] = 0.5
 
                 if actual_rank >= 1 and n_models > 1:
                     svd = TruncatedSVD(n_components=actual_rank, random_state=seed)
@@ -66,25 +71,22 @@ def valid_best_model_budgets(
 
                 R = np.abs(M - S_hat) + (1.0 - observed.astype(float))
 
-            # Upper bound for each model
-            B = []
-            for i in range(n_models):
-                row_val = np.where(observed[i], scores_matrix[i], S_hat[i] + eta * R[i])
-                B.append(float(np.mean(row_val)))
+            row_val = np.where(observed, scores_matrix, S_hat + eta * R)
+            B = np.mean(row_val, axis=1)
 
-            unobs_models = [i for i in range(n_models) if not np.all(observed[i])]
-            if not unobs_models:
+            unobs_models = np.where(~np.all(observed, axis=1))[0]
+            if len(unobs_models) == 0:
                 break
-            best_m_idx = max(unobs_models, key=lambda i: B[i])
+            best_m_idx = unobs_models[np.argmax(B[unobs_models])]
 
             unobs_items = np.where(~observed[best_m_idx])[0]
             if len(unobs_items) == 0:
                 break
-            best_item = int(unobs_items[np.argmax(R[best_m_idx, unobs_items])])
+            best_item = unobs_items[np.argmax(R[best_m_idx, unobs_items])]
 
-            scores_matrix[best_m_idx, best_item] = float(data[best_item]["scores"][models[best_m_idx]])
+            scores_matrix[best_m_idx, best_item] = scores_mat[best_item, best_m_idx]
             observed[best_m_idx, best_item] = True
-            cost += data[best_item]["cost"]
+            cost += costs_arr[best_item]
             step += 1
 
         model_scores = {}
@@ -95,6 +97,6 @@ def valid_best_model_budgets(
             else:
                 model_scores[m] = [float(data[0]["scores"][m])]
 
-        results.append(model_scores)
+        results_map[budget] = model_scores
 
-    return results
+    return [results_map[b] for b in budgets]

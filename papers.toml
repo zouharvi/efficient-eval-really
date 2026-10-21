@@ -1,6 +1,8 @@
 [[papers]]
 Paper = "CollabEval: Statistically Efficient Collaborative Model Evaluation via Matrix Completion"
 Filename = "CollabEval"
+Implemented = true
+Methodname = "CollabEval"
 Link = "https://arxiv.org/pdf/2607.05046"
 Problem = "item+model selection"
 Sequential = "no"
@@ -77,20 +79,6 @@ Method = "Systematically assesses benchmark prediction methods and introduces an
 Meta-goal = "Reliable benchmark prediction from fewer data"
 
 [[papers]]
-Paper = "Adaptive Budget Allocation in LLM-Augmented Surveys"
-Filename = "adaptive_budget_allocation"
-Link = "https://arxiv.org/pdf/2604.12497"
-Problem = "item selection"
-Sequential = "yes"
-Meta-evaluation = "estimation MSE, terminal regret"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Adaptive allocation algorithm that learns which questions are hardest for the LLM while collecting human responses, directing more budget to unreliable questions."
-Meta-goal = "Optimal human-label allocation in LLM-augmented surveys"
-
-[[papers]]
 Paper = "Stop Guessing When to Stop Testing: Efficient Model Evaluation with Just Enough Data"
 Filename = "just_enough_data"
 Implemented = true
@@ -109,6 +97,8 @@ Meta-goal = "Efficient model evaluation with sequential testing"
 [[papers]]
 Paper = "Efficient Benchmarking (of Language Models)"
 Filename = "efficient_benchmarking"
+Implemented = true
+Methodname = "Efficient Benchmarking (Greedy)"
 Link = "https://aclanthology.org/2024.naacl-long.139.pdf"
 Problem = "item selection"
 Sequential = "yes"
@@ -123,6 +113,8 @@ Meta-goal = "Efficient multi-benchmark LM evaluation"
 [[papers]]
 Paper = "Fluid Language Model Benchmarking"
 Filename = "fluid_benchmarking"
+Implemented = true
+Methodname = "Fluid Benchmarking (CAT)"
 Link = "https://arxiv.org/abs/2509.11106"
 Problem = "item+model selection"
 Sequential = "yes"
@@ -137,6 +129,8 @@ Meta-goal = "Dynamic LM benchmarking"
 [[papers]]
 Paper = "100 instances is all you need: predicting the success of a new LLM on unseen data by testing on a few instances"
 Filename = "100_instances"
+Implemented = true
+Methodname = "100 Instances"
 Link = "https://arxiv.org/abs/2409.03563"
 Problem = "item selection"
 Sequential = "no"
@@ -148,7 +142,7 @@ Structured-items = "yes"
 Method = "Tests a new LLM on a small reference set and trains a generic assessor to predict per-instance performance using instance features and reference set results."
 Meta-goal = "Predicting LLM per-instance success from few evaluations"
 
-[[papers]]
+[[papers]]  
 Paper = "Scales++: Compute Efficient Evaluation Subset Selection"
 Filename = "scales_plus_plus"
 Implemented = true
@@ -183,6 +177,8 @@ Meta-goal = "Efficient evaluation with statistical guarantees"
 [[papers]]
 Paper = "Active Model Selection for Large Language Models (LLM Selector)"
 Filename = "llm_selector"
+Implemented = true
+Methodname = "LLM-Selector"
 Link = "https://arxiv.org/abs/2510.09418"
 Problem = "model selection"
 Sequential = "yes"
@@ -213,6 +209,8 @@ Meta-goal = "Label-efficient model selection for text generation"
 [[papers]]
 Paper = "Active Evaluation: Efficient NLG Evaluation with Few Pairwise Comparisons"
 Filename = "active_evaluation"
+Implemented = true
+Methodname = "Active Evaluation (Beat-the-Mean)"
 Link = "https://arxiv.org/abs/2203.06063"
 Problem = "model selection"
 Sequential = "yes"
@@ -271,34 +269,6 @@ Source-only = "no"
 Structured-items = "no"
 Method = "Adaptive testing framework based on IRT that estimates model ability using Fisher information-guided item selection, reducing required items by up to 90%."
 Meta-goal = "Psychometric adaptive testing for LLMs"
-
-[[papers]]
-Paper = "SubLIME: Subset Selection via Rank Correlation Prediction for Data-Efficient LLM Evaluation"
-Filename = "sublime"
-Link = "https://aclanthology.org/2025.acl-long.1477.pdf"
-Problem = "item selection"
-Sequential = "no"
-Meta-evaluation = "Spearman rank correlation, Pearson correlation"
-Code = ""
-Critique = ""
-Source-only = "yes"
-Structured-items = "yes"
-Method = "Trains a Rank Correlation Prediction model that combines intrinsic dataset metrics with partial evaluations from anchor LLMs to select a representative subset."
-Meta-goal = "Data-efficient LLM evaluation"
-
-[[papers]]
-Paper = "Generative Active Testing: Efficient LLM Evaluation via Proxy Task Adaptation"
-Filename = "generative_active_testing"
-Link = "https://arxiv.org/abs/2603.19264"
-Problem = "item selection"
-Sequential = "yes"
-Meta-evaluation = "Estimation Error AUC, Conditional AUROC"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "Transforms dynamic QA tasks into fixed statement verification, enabling uncertainty-aware active sample selection using LLMs as surrogates."
-Meta-goal = "Efficient LLM evaluation via proxy tasks"
 
 [[papers]]
 Paper = "Towards Optimal Evaluation Efficiency for Large Language Models"
@@ -381,62 +351,6 @@ Method = "Active testing framework for NLP that selects informative test samples
 Meta-goal = "Budget-constrained active testing for performance estimation"
 
 [[papers]]
-Paper = "Beyond Fixed Benchmarks and Worst-Case Attacks: Dynamic Boundary Evaluation for Language Models"
-Filename = "dynamic_boundary"
-Link = "https://arxiv.org/pdf/2605.06213"
-Problem = "item+model selection"
-Sequential = "yes"
-Meta-evaluation = "RMSE, rank stability, difficulty drift, Brier score"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "Actively locates each model's performance boundary using Skill-Guided Boundary Search and places models on a globally comparable difficulty scale."
-Meta-goal = "Dynamic boundary evaluation for LLMs"
-
-[[papers]]
-Paper = "Robust LLM Performance Certification via Constrained Maximum Likelihood Estimation"
-Filename = "robust_llm_certification"
-Link = "https://arxiv.org/abs/2604.03257"
-Problem = "failure rate estimation"
-Sequential = "no"
-Meta-evaluation = "MSE, bias, variance"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Constrained MLE framework to estimate target LLM failure rates by modeling an LLM-judge's true and false positive rates using a small human-labeled calibration set."
-Meta-goal = "Robust LLM failure rate certification"
-
-[[papers]]
-Paper = "Position: Science of AI Evaluation Requires Item-level Benchmark Data"
-Filename = "item_level_benchmark"
-Link = "https://arxiv.org/pdf/2604.03244"
-Problem = "position paper"
-Sequential = "no"
-Meta-evaluation = "Classical Test Theory (CTT), Item Factor Analysis (IFA)"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Constructs OPENEVAL, an item-level archive, and uses CTT and Item Factor Analysis to evaluate item quality and benchmark validity."
-Meta-goal = "Standardized item-level data releases"
-
-[[papers]]
-Paper = "Measuring Five-Nines Reliability: Sample-Efficient LLM Evaluation in Saturated Benchmarks"
-Filename = "five_nines_reliability"
-Link = "https://arxiv.org/pdf/2605.11209"
-Problem = "item selection"
-Sequential = "yes"
-Meta-evaluation = "relative standard error (RSE), CI width, total variation distance"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "Observes LLM failures concentrate on specific input parameters and uses the cross-entropy method (CEM) to learn a sampling distribution focused on failure-prone regions."
-Meta-goal = "Sample-efficient reliability evaluation"
-
-[[papers]]
 Paper = "Fewer Battles, More Gain: An Information-Efficient Framework for Arena-based LLM Evaluation"
 Filename = "fewer_battles_more_gain"
 Implemented = true
@@ -469,34 +383,6 @@ Method = "Applies exploratory Factor Analysis to model performance data to uncov
 Meta-goal = "Uncovering core skills in LLMs"
 
 [[papers]]
-Paper = "HyPAC: Cost-Efficient LLMs–Human Hybrid Annotation with PAC Error Guarantees"
-Filename = "hypac"
-Link = "https://arxiv.org/pdf/2602.02550v1"
-Problem = "item selection"
-Sequential = "no"
-Meta-evaluation = "annotation error, cost savings"
-Code = "https://anonymous.4open.science/r/HyPAC-B5AD"
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Formulates hybrid annotation as a constrained cost optimization problem, calibrating decision thresholds using importance sampling and UCBs to route inputs to models or humans."
-Meta-goal = "Cost-efficient hybrid annotation with PAC guarantees"
-
-[[papers]]
-Paper = "How Many Iterations to Jailbreak? Dynamic Budget Allocation for Multi-Turn LLM Evaluation"
-Filename = "jailbreak_iterations"
-Link = "https://arxiv.org/pdf/2605.06605"
-Problem = "item selection"
-Sequential = "yes"
-Meta-evaluation = "coverage rate, LPB size, coverage deviation"
-Code = "https://github.com/Shai128/dapro"
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "DAPRO: dynamic budget allocation framework for multi-turn LLM evaluation using conformal survival analysis to bound the time-to-event."
-Meta-goal = "Dynamic budget allocation for multi-turn LLM evaluation"
-
-[[papers]]
 Paper = "Efficient Evaluation of LLM Performance with Statistical Guarantees"
 Filename = "efficient_eval_statistical"
 Implemented = true
@@ -513,22 +399,10 @@ Method = "Combines a Bayesian factor model with a hybrid variance-reduction and 
 Meta-goal = "Efficient evaluation with statistical guarantees"
 
 [[papers]]
-Paper = "Nonparametric LLM Evaluation from Preference Data"
-Filename = "nonparametric_llm_eval"
-Link = "https://arxiv.org/pdf/2601.21816"
-Problem = "item+model selection"
-Sequential = "no"
-Meta-evaluation = "estimation error, CI coverage"
-Code = "https://anonymous.4open.science/r/NonparametricLLMEval-603E"
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "DMLRANK: nonparametric statistical framework using debiased machine learning to efficiently estimate generalized average ranking scores from preference data."
-Meta-goal = "Nonparametric LLM evaluation from preference data"
-
-[[papers]]
 Paper = "The Scaling Law of Evaluation Failure: Why Simple Averaging Collapses Under Data Sparsity and Item Difficulty Gaps, and How Item Response Theory Recovers Ground Truth Across Domains"
 Filename = "scaling_law_eval_failure"
+Implemented = true
+Methodname = "Scaling Law IRT Recovery"
 Link = "https://arxiv.org/pdf/2605.11205"
 Problem = "model selection"
 Sequential = "no"
@@ -557,34 +431,6 @@ Method = "Combines a modified multidimensional IRT model with adaptive item sele
 Meta-goal = "Cost-efficient estimation of general abilities"
 
 [[papers]]
-Paper = "Rich Insights from Cheap Signals: Efficient Evaluations via Tensor Factorization"
-Filename = "rich_insights_cheap_signals"
-Link = "https://arxiv.org/pdf/2603.02029"
-Problem = "performance estimation"
-Sequential = "no"
-Meta-evaluation = "cross-entropy loss"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Tensor factorization framework that merges abundant cheap autorater scores with limited human gold-standard labels to accurately predict human preferences."
-Meta-goal = "Efficient fine-grained evaluations via tensor factorization"
-
-[[papers]]
-Paper = "Instance-Optimal Estimation with Multiple LLM Judges on a Budget"
-Filename = "instance_optimal_estimation"
-Link = "https://arxiv.org/pdf/2605.23362"
-Problem = "judge selection"
-Sequential = "yes"
-Meta-evaluation = "l_p-error"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "EST-IVWE: adaptive algorithm constructing optimistically biased variance estimates to optimally allocate a fixed evaluation budget across heterogeneous LLM judges."
-Meta-goal = "Budgeted heteroskedastic multi-judge estimation"
-
-[[papers]]
 Paper = "Efficient Benchmarking Is Just Feature Selection and Multiple Regression"
 Filename = "feature_selection_regression"
 Implemented = true
@@ -603,6 +449,8 @@ Meta-goal = "Efficient benchmarking via feature selection"
 [[papers]]
 Paper = "Large Language Model Selection with Limited Annotations"
 Filename = "llm_selection_limited"
+Implemented = true
+Methodname = "SELECT-LLM"
 Link = "https://arxiv.org/pdf/2605.24981"
 Problem = "model selection"
 Sequential = "yes"
@@ -631,20 +479,6 @@ Method = "PSN-IRT: estimates latent model ability and item parameters to constru
 Meta-goal = "Rethinking LLM benchmarking with IRT"
 
 [[papers]]
-Paper = "Sample-Efficient Human Evaluation of Large Language Models via Maximum Discrepancy Competition"
-Filename = "sample_efficient_human_evaluation"
-Link = "https://aclanthology.org/2025.acl-long.535.pdf"
-Problem = "item+model selection"
-Sequential = "no"
-Meta-evaluation = "Spearman rank correlation, accuracy"
-Code = "https://github.com/weiji-Feng/MAD-Eval"
-Critique = "Requires generating responses for all instructions in the pool before selection, computationally expensive for large pools."
-Source-only = "no"
-Structured-items = "yes"
-Method = "Automatically and adaptively selects a compact set of input instructions that maximize semantic discrepancy between pairs of LLM responses for human evaluation."
-Meta-goal = "Sample-efficient human evaluation for comparing LLMs adaptively"
-
-[[papers]]
 Paper = "Efficient Benchmarking of NLP APIs using Multi-armed Bandits"
 Filename = "efficient_benchmarking_apis"
 Implemented = true
@@ -659,62 +493,6 @@ Source-only = "no"
 Structured-items = "yes"
 Method = "Formulates the benchmarking problem as a sequential decision process using Thompson Sampling to identify the best API with minimal document queries."
 Meta-goal = "Identify the best NLP API efficiently"
-
-[[papers]]
-Paper = "Reasoning in Token Economies: Budget-Aware Evaluation of LLM Reasoning Strategies"
-Filename = "reasoning_token_economies"
-Link = "https://aclanthology.org/2024.emnlp-main.1112.pdf"
-Problem = "reasoning evaluation"
-Sequential = "no"
-Meta-evaluation = "accuracy vs. number of queries, accuracy vs. number of tokens"
-Code = ""
-Critique = "Focuses on evaluation of reasoning strategies rather than proposing a new subset selection algorithm. Just evaluates existing strategies."
-Source-only = "yes"
-Structured-items = "no"
-Method = "Proposes a budget-aware evaluation framework that accounts for the computational cost (tokens, queries) when comparing different LLM reasoning strategies."
-Meta-goal = "Budget-aware comparison of reasoning strategies"
-
-[[papers]]
-Paper = "Active Testing: An Unbiased Evaluation Method for Distantly Supervised Relation Extraction"
-Filename = "active_testing_relation_extraction"
-Link = "https://aclanthology.org/2020.findings-emnlp.20.pdf"
-Problem = "item selection"
-Sequential = "yes"
-Meta-evaluation = "PR-curve distance, P@K"
-Code = ""
-Critique = "Specifically designed for distantly supervised relation extraction; assumes binary or structured labels."
-Source-only = "no"
-Structured-items = "yes"
-Method = "An iterative active testing approach that selects valuable entity pairs for manual annotation based on maximum expected model change, yielding an unbiased evaluation."
-Meta-goal = "Unbiased evaluation for distantly supervised relation extraction"
-
-[[papers]]
-Paper = "Is it worth it? Budget-related evaluation metrics for model selection"
-Filename = "is_it_worth_it"
-Link = "https://aclanthology.org/L18-1317.pdf"
-Problem = "model selection"
-Sequential = "no"
-Meta-evaluation = "gain, cumulative gain"
-Code = ""
-Critique = "Focuses on annotation pre-filtering rather than general evaluation. It assumes a fixed cost per annotation."
-Source-only = "yes"
-Structured-items = "yes"
-Method = "Proposes cumulative gain as a more suitable metric than F-score for selecting predictive models used to pre-filter data for human annotation under a fixed budget."
-Meta-goal = "Budget-related evaluation metrics for model selection"
-
-[[papers]]
-Paper = "MMEVALPRO: Calibrating Multimodal Benchmarks Towards Trustworthy and Efficient Evaluation"
-Filename = "mmevalpro"
-Link = "https://aclanthology.org/2025.naacl-long.247.pdf"
-Problem = "item calibration"
-Sequential = "no"
-Meta-evaluation = "consistency gap, genuine accuracy"
-Code = "https://mmevalpro.github.io"
-Critique = "Focuses on multimodal tasks rather than text-only LLMs. The dataset is essentially augmented MCQs rather than algorithmic subset selection."
-Source-only = "no"
-Structured-items = "yes"
-Method = "Proposes augmenting MCQs with prerequisite perception and knowledge questions to detect whether models are just making educated guesses or truly reasoning."
-Meta-goal = "Calibrating multimodal benchmarks for trustworthy evaluation"
 
 [[papers]]
 Paper = "Item Response Theory for Efficient Human Evaluation of Chatbots"
@@ -733,20 +511,6 @@ Method = "Uses Item Response Theory (IRT) to assess both the ability of chatbots
 Meta-goal = "Efficient human evaluation of chatbots using IRT"
 
 [[papers]]
-Paper = "Debate, Deliberate, Decide (D3): A Cost-Aware Adversarial Framework for Reliable and Interpretable LLM Evaluation"
-Filename = "d3"
-Link = "https://aclanthology.org/2026.eacl-long.392.pdf"
-Problem = "model selection"
-Sequential = "yes"
-Meta-evaluation = "accuracy, Cohen's kappa, cost"
-Code = "https://github.com/abirharrasse/D3-Judge"
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "Proposes a multi-agent debate framework (D3) with roles (Advocate, Judge, Juror) and two protocols (parallel MORE and iterative SAMRE) to improve reliability, interpretability, and cost-efficiency of LLM-as-a-judge."
-Meta-goal = "Reliable, interpretable, and cost-aware LLM evaluation via debate"
-
-[[papers]]
 Paper = "Arena-Lite: Efficient and Reliable Large Language Model Evaluation via Tournament-Based Direct Comparisons"
 Filename = "arena_lite"
 Implemented = true
@@ -761,20 +525,6 @@ Source-only = "no"
 Structured-items = "no"
 Method = "Replaces baseline-mediated evaluation with a tournament-based approach of head-to-head comparisons between candidate models, reducing required comparisons while increasing ranking reliability."
 Meta-goal = "Efficient and reliable LLM evaluation via tournament-based direct comparisons"
-
-[[papers]]
-Paper = "EffiEval: Efficient and Generalizable Model Evaluation via Capability Coverage Maximization"
-Filename = "effieval"
-Link = "https://arxiv.org/abs/2508.09662"
-Problem = "item selection"
-Sequential = "no"
-Meta-evaluation = "model_mae, Spearman correlation, Kendall tau"
-Code = "https://castria-cn.github.io/EffiEval-homepage/"
-Critique = ""
-Source-only = "yes"
-Structured-items = "no"
-Method = "Maximizes capability coverage by selecting a subset of evaluation samples that activate the broadest range of indicator neurons in a surrogate model, using the Model Utility Index (MUI)."
-Meta-goal = "Efficient and generalizable model evaluation via capability coverage maximization"
 
 [[papers]]
 Paper = "SparseEval: Efficient Evaluation of Large Language Models by Sparse Optimization"
@@ -825,34 +575,6 @@ Method = "Formally defines and approximates the subset selection problem for eff
 Meta-goal = "Efficient benchmarking via bias-bounded subset selection"
 
 [[papers]]
-Paper = "Active Evaluation Acquisition for Efficient LLM Benchmarking"
-Filename = "active_eval_acquisition"
-Link = "https://openreview.net/pdf?id=EHqQaBYYlE"
-Problem = "item+model selection"
-Sequential = "yes"
-Meta-evaluation = "model_mae"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Uses a Neural Process model to capture dependencies across evaluation prompts and an RL-based acquisition policy to dynamically select the most informative prompts for each model."
-Meta-goal = "Active evaluation acquisition for efficient LLM benchmarking"
-
-[[papers]]
-Paper = "Benchmark2: Systematic Evaluation of LLM Benchmarks"
-Filename = "benchmark2"
-Link = "https://arxiv.org/pdf/2601.03986"
-Problem = "benchmark evaluation"
-Sequential = "no"
-Meta-evaluation = "CBRC, DS, CAD"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Proposes a framework (BENCHMARK^2) to evaluate benchmark quality using three metrics: Cross-Benchmark Ranking Consistency, Discriminability Score, and Capability Alignment Deviation."
-Meta-goal = "Systematic evaluation of LLM benchmarks"
-
-[[papers]]
 Paper = "Confident Rankings with Fewer Items: Adaptive LLM Evaluation with Continuous Scores"
 Filename = "confident_rankings"
 Implemented = true
@@ -886,20 +608,6 @@ Method = "A correlation-aware best-arm identification algorithm called Synchroni
 Meta-goal = "Efficient model selection via synchronized successive rejects"
 
 [[papers]]
-Paper = "How Reliable is Language Model Micro-Benchmarking?"
-Filename = "reliable_microbenchmarking"
-Link = "https://openreview.net/forum?id=cReExMQLiK"
-Problem = "item selection"
-Sequential = "no"
-Meta-evaluation = "pairwise ranking consistency"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "no"
-Method = "Introduces a meta-evaluation measure to investigate how well a micro-benchmark can rank two models as a function of their performance difference on the full benchmark."
-Meta-goal = "Evaluating reliability of micro-benchmarks"
-
-[[papers]]
 Paper = "Efficient Cost-Aware LLM Evaluation via Bayesian Bandit Gittins Indices"
 Filename = "cost_aware_gittins"
 Implemented = true
@@ -916,30 +624,3 @@ Method = "Formulates cost-aware LLM evaluation as a Bayesian bandit problem and 
 Meta-goal = "Efficient cost-aware model selection via Bayesian bandit Gittins indices"
 
 
-[[papers]]
-Paper = "Extending Item Response Theory for Efficient and Meaningful Multilingual Evaluation"
-Filename = "multilingual_irt"
-Link = "https://arxiv.org/pdf/2606.15643"
-Problem = "performance estimation"
-Sequential = "no"
-Meta-evaluation = "binary cross-entropy"
-Code = "https://github.com/gililior/multilingual_irt"
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "Extends Item Response Theory with per-language difficulty deviations, split discriminability separating content from language effects, and per-language ability residuals to predict unobserved instances and detect translation errors."
-Meta-goal = "Efficient and meaningful multilingual evaluation"
-
-[[papers]]
-Paper = "Prompt-Based Cost-Effective Evaluation and Operation of ChatGPT as a Computer Programming Teaching Assistant"
-Filename = "chatgpt_ta"
-Link = "https://arxiv.org/pdf/2501.17176"
-Problem = "failure rate estimation"
-Sequential = "no"
-Meta-evaluation = "agreement with human evaluation"
-Code = ""
-Critique = ""
-Source-only = "no"
-Structured-items = "yes"
-Method = "Designs an in-context-learning prompt that makes the LLM produce feedback with a programmatically analyzable structure carrying diagnostic information, automating large parts of the evaluation and yielding a lower bound on the fraction of feedbacks containing incorrect information; also compares GPT-3.5T and GPT-4T as programming teaching assistants."
-Meta-goal = "Cost-effective automated evaluation of LLM feedback quality for a programming teaching assistant"

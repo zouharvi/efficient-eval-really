@@ -93,6 +93,13 @@ from efficient_eval_really.methods.cost_efficient_estimation import cost_efficie
 from efficient_eval_really.methods.faq import faq_budgets
 from efficient_eval_really.methods.arena_lite import arena_lite_budgets
 from efficient_eval_really.methods.adaptive_arena import adaptive_arena_budgets
+from efficient_eval_really.methods.collab_eval import collab_eval_budgets
+from efficient_eval_really.methods.one_hundred_instances import one_hundred_instances_budgets
+from efficient_eval_really.methods.llm_selector import llm_selector_budgets, select_llm_budgets
+from efficient_eval_really.methods.active_evaluation import active_evaluation_budgets
+from efficient_eval_really.methods.fluid_benchmarking import fluid_benchmarking_budgets
+from efficient_eval_really.methods.efficient_benchmarking import efficient_benchmarking_budgets
+from efficient_eval_really.methods.scaling_law_eval_failure import scaling_law_eval_failure_budgets
 
 METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Metric Variance": functools.partial(subset2evaluate_to_ours_budgets, method="metric_var", metric="metric"),
@@ -135,6 +142,14 @@ METHODS_BUDGETS: dict[str, Callable[[Data, Budgets], ModelScoresAtBudget]] = {
     "Arena-Lite": arena_lite_budgets,
     "Adaptive-Arena": adaptive_arena_budgets,
     "Adaptive-Arena (A-optimality)": adaptive_arena_budgets,
+    "CollabEval": collab_eval_budgets,
+    "100 Instances": one_hundred_instances_budgets,
+    "LLM-Selector": llm_selector_budgets,
+    "SELECT-LLM": select_llm_budgets,
+    "Active Evaluation (Beat-the-Mean)": active_evaluation_budgets,
+    "Fluid Benchmarking (CAT)": fluid_benchmarking_budgets,
+    "Efficient Benchmarking (Greedy)": efficient_benchmarking_budgets,
+    "Scaling Law IRT Recovery": scaling_law_eval_failure_budgets,
     "Weighted Sampling with Priors": weighted_sampling_with_priors,
     "Weighted Sampling w/ Priors": weighted_sampling_with_priors,
     # "Weighted Sampling w/ Priors Corrected": weighted_sampling_with_priors_corrected,

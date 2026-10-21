@@ -47,6 +47,7 @@ def efficient_benchmarking_apis_budgets(
 
     results_map = {}
     sorted_budgets = sorted(set(budgets))
+    BATCH_SIZE = max(10, min(100, n_models // 2))
 
     for budget in sorted_budgets:
         while cost < budget:
@@ -60,18 +61,26 @@ def efficient_benchmarking_apis_budgets(
             stds = np.where(c > 1, np.sqrt(var), 0.2)
             sems = np.maximum(1e-4, stds / np.sqrt(c))
 
-            # Vectorized normal draws
-            samples = rng.normal(loc=means, scale=sems)
-            best_idx = avail[np.argmax(samples)]
+            batch_limit = min(BATCH_SIZE, int(budget - cost) + 1)
+            samples = rng.normal(loc=means, scale=sems, size=(batch_limit, len(avail)))
+            winners = avail[np.argmax(samples, axis=1)]
+            added = 0
 
-            item_idx = item_indices[best_idx]
-            sc = scores_mat[item_idx, best_idx]
-            model_scores[best_idx].append(sc)
-            item_indices[best_idx] += 1
-            counts[best_idx] += 1
-            sums[best_idx] += sc
-            sum_sqs[best_idx] += sc * sc
-            cost += costs_arr[item_idx]
+            for best_idx in winners:
+                if cost >= budget or item_indices[best_idx] >= n_items:
+                    continue
+                item_idx = item_indices[best_idx]
+                sc = scores_mat[item_idx, best_idx]
+                model_scores[best_idx].append(sc)
+                item_indices[best_idx] += 1
+                counts[best_idx] += 1
+                sums[best_idx] += sc
+                sum_sqs[best_idx] += sc * sc
+                cost += costs_arr[item_idx]
+                added += 1
+
+            if added == 0:
+                break
 
         results_map[budget] = {models[i]: list(model_scores[i]) for i in range(n_models)}
 

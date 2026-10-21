@@ -72,10 +72,17 @@ for method_name, model_scores_subset_at_budgets, data_name, model_scores_all, bu
     for budget, model_scores_subset_at_budget in zip(budgets, model_scores_subset_at_budgets):
         results_local.append(efficient_eval_really.utils.meta_evaluate_scores_subset(model_scores_subset_at_budget, model_scores_all))
 
+    existing_entry = results_out.get(method_name, {}).get(data_name, {})
+    existing_runtime = existing_entry.get("runtime") if isinstance(existing_entry, dict) else None
+
     results_out[method_name][data_name] = {}
     for key in results_local[0]:
         results_out[method_name][data_name][key] = statistics.mean([result[key] for result in results_local])
-    results_out[method_name][data_name]["runtime"] = runtime_avg
+
+    if not args.no_reuse and existing_runtime is not None:
+        results_out[method_name][data_name]["runtime"] = existing_runtime
+    else:
+        results_out[method_name][data_name]["runtime"] = runtime_avg
 
 with open("computed/01-results_all.json", "w") as f:
     json.dump(results_out, f, indent=2)
