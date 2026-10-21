@@ -8,7 +8,8 @@ def just_enough_data_budgets(
     budgets: Budgets,
     batch_size: int = 5,
     z_crit: float = 1.96,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Group Sequential Testing with Adaptive Early Stopping.
 

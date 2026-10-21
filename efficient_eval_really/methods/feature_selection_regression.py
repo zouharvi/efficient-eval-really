@@ -259,7 +259,7 @@ class MRMRPred:
         self,
         source_full_scores: np.ndarray,
         coreset_size: int,
-        seed: int = 42,
+        seed: int = 0,
     ) -> "MRMRPred":
         """Fit MRMR feature selection.
 
@@ -410,7 +410,8 @@ def feature_selection_regression_budgets(
     continuous_mi_k: int = 8,
     kernel_degree: int = 2,
     metric: str = "metric",
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """This approach selects a coreset using Minimum Redundancy Maximum Relevance (mRMR).
 

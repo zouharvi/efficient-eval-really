@@ -9,7 +9,8 @@ def scales_plus_plus_budgets(
     data: Data,
     budgets: Budgets,
     n_pca_components: int = 3,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Scales++: Compute Efficient Evaluation Subset Selection.
 

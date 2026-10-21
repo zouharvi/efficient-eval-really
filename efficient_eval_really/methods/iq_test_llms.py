@@ -8,7 +8,8 @@ def iq_test_llms_budgets(
     data: Data,
     budgets: Budgets,
     n_factors: int = 3,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Core Skills Latent Factor Evaluation (IQ Test for LLMs).
 

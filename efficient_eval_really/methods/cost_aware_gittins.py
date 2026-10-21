@@ -51,6 +51,8 @@ def cost_aware_gittins_budgets(
     mu0: float = 0.5,
     v0: float = 0.04,
     tau2: float = 0.25,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Cost-Aware Gittins Index Policy for Bayesian Bandit LLM Evaluation.
 

@@ -4,7 +4,7 @@ from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 from efficient_eval_really.methods.tailored_benchmarks import _kmedoids
 
 
-def anchor_points_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
+def anchor_points_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """Anchor Points: K-Medoids on item correlation distance."""
     models = list(data[0]["scores"].keys())
     metric = next(iter(data[0]["scores_metrics"][models[0]]))
@@ -23,7 +23,7 @@ def anchor_points_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
             results.append({m: [item["scores"][m] for item in data] for m in models})
             continue
 
-        medoids = _kmedoids(D, k)
+        medoids = _kmedoids(D, k, seed=seed)
         results.append({m: [data[i]["scores"][m] for i in medoids] for m in models})
 
     return results

@@ -17,6 +17,8 @@ def _fast_upper_confidence_bound(
     budgets: Budgets,
     c: float = 100 * math.sqrt(2),
     coldstart: int = 5,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     models = list(data[0]["scores"].keys())
     n_models = len(models)
@@ -82,7 +84,8 @@ def _fast_weighted_sampling(
     data: Data,
     budgets: Budgets,
     coldstart: int = 5,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     rng = np.random.default_rng(seed)
     models = list(data[0]["scores"].keys())
@@ -152,11 +155,11 @@ def evaluation_bandit_to_ours(data: Data, budget: Budget, method: str, **kwargs)
     return evaluation_bandit_to_ours_budgets(data=data, budgets=[budget], method=method, **kwargs)[0]
 
 
-def evaluation_bandit_to_ours_budgets(data: Data, budgets: Budgets, method: str, **kwargs) -> ModelScoresAtBudget:
+def evaluation_bandit_to_ours_budgets(data: Data, budgets: Budgets, method: str, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     if method == "upper_confidence_bound":
-        return _fast_upper_confidence_bound(data=data, budgets=budgets, **kwargs)
+        return _fast_upper_confidence_bound(data=data, budgets=budgets, seed=seed, **kwargs)
     elif method == "weighted_sampling":
-        return _fast_weighted_sampling(data=data, budgets=budgets, **kwargs)
+        return _fast_weighted_sampling(data=data, budgets=budgets, seed=seed, **kwargs)
     elif method == "uniform":
         return evaluation_bandit.algorithms.uniform(data=data, budgets=budgets)
     elif method == "uniform_nonsquare":

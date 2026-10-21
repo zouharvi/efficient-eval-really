@@ -9,6 +9,8 @@ def smart_filtering_budgets(
     budgets: Budgets,
     easy_percentile: float = 90.0,
     sim_threshold: float = 0.95,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """SMART Filtering of Benchmark Datasets.
 

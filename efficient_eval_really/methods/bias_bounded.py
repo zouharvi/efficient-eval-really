@@ -4,7 +4,7 @@ from sklearn.metrics import pairwise_distances
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
-def bias_bounded_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
+def bias_bounded_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """Bias-Bounded Submodular Subset Selection.
 
     Algorithm from (2025):

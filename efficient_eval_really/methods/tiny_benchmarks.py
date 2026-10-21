@@ -8,7 +8,7 @@ def _binarize(S: np.ndarray) -> np.ndarray:
     return (S >= np.mean(S)).astype(float)
 
 
-def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
+def _kmeans_anchors(X: np.ndarray, k: int, seed: int = 0) -> list[int]:
     """k-Means clustering; return index of item nearest each centroid."""
     import warnings
 
@@ -18,7 +18,7 @@ def _kmeans_anchors(X: np.ndarray, k: int) -> list[int]:
 
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=ConvergenceWarning)
-        kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
+        kmeans = KMeans(n_clusters=k, random_state=seed, n_init="auto")
         kmeans.fit(X)
     return pairwise_distances(kmeans.cluster_centers_, X).argmin(axis=1).tolist()
 
@@ -53,7 +53,7 @@ def _fit_irt(Y: np.ndarray, D: int = 10) -> np.ndarray:
     return np.hstack([A, B])  # (n_items, 2*D)
 
 
-def tiny_benchmarks_budgets(data: Data, budgets: Budgets, method: str) -> ModelScoresAtBudget:
+def tiny_benchmarks_budgets(data: Data, budgets: Budgets, method: str, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """tinyBenchmarks item selection.
 
     method='clustering': K-Means on binarized response patterns.
@@ -78,6 +78,6 @@ def tiny_benchmarks_budgets(data: Data, budgets: Budgets, method: str) -> ModelS
         if k >= n_items:
             results.append({m: [item["scores"][m] for item in data] for m in models})
             continue
-        anchors = _kmeans_anchors(X, k)
+        anchors = _kmeans_anchors(X, k, seed=seed)
         results.append({m: [data[i]["scores"][m] for i in anchors] for m in models})
     return results

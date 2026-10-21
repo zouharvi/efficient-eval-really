@@ -10,7 +10,8 @@ def valid_best_model_budgets(
     rank: int = 2,
     tau: int = 25,
     eta: float = 1.0,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Prediction-Powered Unbiased Low-Rank Sequential Evaluation (PULSE).
 

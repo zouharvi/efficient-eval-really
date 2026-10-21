@@ -3,7 +3,7 @@ import numpy as np
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
-def arena_lite_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelScoresAtBudget:
+def arena_lite_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """Arena-Lite: Efficient LLM Evaluation via Tournament-Based Direct Comparisons.
 
     Algorithm based on Son et al. (EMNLP 2024):

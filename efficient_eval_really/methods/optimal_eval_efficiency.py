@@ -11,7 +11,8 @@ def optimal_eval_efficiency_budgets(
     n_iter: int = 10000,
     T_start: float = 1.0,
     T_end: float = 1e-3,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """
     Item subset selection via simulated annealing to minimise the L2 error

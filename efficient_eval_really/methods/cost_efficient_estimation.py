@@ -8,6 +8,8 @@ def cost_efficient_estimation_budgets(
     data: Data,
     budgets: Budgets,
     d: int = 5,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Cost-Efficient Estimation of General Abilities Across Benchmarks.
 

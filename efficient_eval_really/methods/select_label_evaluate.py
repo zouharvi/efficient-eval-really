@@ -7,7 +7,8 @@ from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 def select_label_evaluate_budgets(
     data: Data,
     budgets: Budgets,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Select, Label, Evaluate: Active Testing in NLP.
 

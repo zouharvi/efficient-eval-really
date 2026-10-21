@@ -3,7 +3,7 @@ import numpy as np
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
-def active_testing_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelScoresAtBudget:
+def active_testing_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """Active Testing with Level-Unit Residual Estimator (LURE).
 
     Algorithm from Kossen et al. (ICML 2021):

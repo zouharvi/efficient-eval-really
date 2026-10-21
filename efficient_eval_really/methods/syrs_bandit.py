@@ -5,7 +5,7 @@ import numpy as np
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
-def syrs_bandit_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelScoresAtBudget:
+def syrs_bandit_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """Synchronized Successive Rejects (SySRs).
 
     Algorithm 1 from Lyu et al. (2026):

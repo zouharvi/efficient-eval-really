@@ -5,7 +5,7 @@ from collections.abc import Callable
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
-def weighted_sampling_with_priors(data: Data, budgets: Budgets, gamma: float = 0.95, coldstart=5, seed=42) -> ModelScoresAtBudget:
+def weighted_sampling_with_priors(data: Data, budgets: Budgets, gamma: float = 0.95, coldstart=5, seed=0, **kwargs) -> ModelScoresAtBudget:
     """
     gamma [0, 1]: how much of the ranking is based on human evaluations only as opposed to metrics
     """
@@ -90,71 +90,115 @@ def weighted_sampling_with_priors(data: Data, budgets: Budgets, gamma: float = 0
     return [results_map[b] for b in budgets]
 
 
-def weighted_sampling_with_priors_corrected(data: Data, budgets: Budgets, coldstart: int = 5, batch_size: int = 10) -> ModelScoresAtBudget:
-    """
-    A variant of weighted_sampling_with_priors that corrects for the bias introduced by the sampling method.
-    This method uses a linear regression model to predict the missing scores based on the available scores and metrics.
-    """
-    import sklearn.linear_model
+def weighted_sampling_with_priors_corrected(
+    data: Data,
+    budgets: Budgets,
+    coldstart: int = 5,
+    batch_size: int = 10,
+    seed: int = 0,
+    **kwargs,
+) -> ModelScoresAtBudget:
+    """A variant of weighted_sampling_with_priors that corrects for the bias introduced by the sampling method.
 
+    This method uses a linear regression model (one-way item fixed effects + metric) to predict missing scores.
+    """
+    import numpy as np
+
+    rng = np.random.default_rng(seed)
     data = list(data)
-    # cold start phase
-    model_scores = {model: [x["scores"][model] for x in data[:coldstart]] for model in data[0]["scores"]}
-    models = list(data[0]["scores"])
-    cost = sum(x["cost"] for x in data[:coldstart]) * len(models)
+    models = list(data[0]["scores"].keys())
+    n_models = len(models)
+    n_items = len(data)
 
-    # one-hot encoding
-    one_hot_item = {item_i: [0] * len(data) for item_i in range(len(data))}
-    for i in range(len(data)):
-        one_hot_item[i][i] = 1
-    one_hot_model = {model: [0] * len(models) for model in models}
-    for i, model in enumerate(models):
-        one_hot_model[model][i] = 1
+    scores_mat = np.array([[item["scores"][m] for m in models] for item in data], dtype=float)
+    costs_arr = np.array([item["cost"] for item in data], dtype=float)
 
-    output = []
-    # active learning phase
-    while budgets:
-        if cost >= budgets[0] or not models:
-            budgets = budgets[1:]
-            output.append({model: list(model_scores[model]) for model in model_scores})
-            continue
+    metric_key = next(iter(data[0]["scores_metrics"][models[0]]))
+    metrics_mat = np.array([[item["scores_metrics"][m][metric_key] for m in models] for item in data], dtype=float)
 
-        estimator_model = sklearn.linear_model.LinearRegression()
-        # TODO: we need to make this faster
-        estimator_model.fit(
-            [
-                # encode item_i one-hot
-                [x["scores_metrics"][model]["metric"]] + one_hot_item[item_i]
-                for model in list(data[0]["scores"])
-                for item_i, x in enumerate(data[: len(model_scores[model])])
-            ],
-            [x["scores"][model] for model in list(data[0]["scores"]) for x in data[: len(model_scores[model])]],
-        )
-        # predict missing values
-        estimated_scores = {
-            model: list(estimator_model.predict([[x["scores_metrics"][model]["metric"]] + one_hot_item[item_i] for item_i, x in enumerate(data)]))  # type: ignore
-            for model in models
-        }
+    model_scores = [[] for _ in range(n_models)]
+    sums = np.zeros(n_models, dtype=float)
+    counts = np.zeros(n_models, dtype=int)
+    cost = 0.0
 
-        # skip recomputation sometimes
-        for _ in range(batch_size):
-            model_estimate = {
-                # use predictions for the missing values
-                model: statistics.mean(model_scores[model] + estimated_scores[model][len(model_scores[model]) :])
-                for model in models
-            }
-            models.sort(key=model_estimate.get, reverse=True)  # type: ignore
+    k_cold = min(coldstart, n_items)
+    for m in range(n_models):
+        for i in range(k_cold):
+            sc = scores_mat[i, m]
+            model_scores[m].append(sc)
+            sums[m] += sc
+            counts[m] += 1
+            cost += costs_arr[i]
 
-            model = random.choices(
-                models,
-                weights=[1 / (rank + 1) for model, rank in zip(models, range(len(models)))],
-                k=1,
-            )[0]
-            item = data[len(model_scores[model])]
-            model_scores[model].append(item["scores"][model])
-            cost += item["cost"]
+    mask = np.zeros((n_items, n_models), dtype=bool)
+    mask[:k_cold, :] = True
 
-            models = [model for model in model_scores if len(model_scores[model]) < len(data)]
-            if not models:
+    results_map = {}
+    sorted_budgets = sorted(set(budgets))
+    effective_batch_size = max(batch_size, min(100, n_models // 2))
+
+    for b in sorted_budgets:
+        while cost < b:
+            avail = np.where(counts < n_items)[0]
+            if len(avail) == 0:
                 break
-    return output
+
+            # Closed-form One-Way Fixed Effects OLS (within-item centering)
+            item_counts = mask.sum(axis=1)
+            eval_items = item_counts > 0
+
+            y_eval = np.where(mask, scores_mat, 0.0)
+            z_eval = np.where(mask, metrics_mat, 0.0)
+
+            y_item_mean = np.zeros(n_items, dtype=float)
+            z_item_mean = np.zeros(n_items, dtype=float)
+            y_item_mean[eval_items] = y_eval[eval_items].sum(axis=1) / item_counts[eval_items]
+            z_item_mean[eval_items] = z_eval[eval_items].sum(axis=1) / item_counts[eval_items]
+
+            n_total_eval = np.sum(item_counts)
+            overall_y = np.sum(y_eval) / max(1, n_total_eval)
+            overall_z = np.sum(z_eval) / max(1, n_total_eval)
+            y_item_mean[~eval_items] = overall_y
+            z_item_mean[~eval_items] = overall_z
+
+            y_tilde = np.where(mask, scores_mat - y_item_mean[:, None], 0.0)
+            z_tilde = np.where(mask, metrics_mat - z_item_mean[:, None], 0.0)
+
+            denom = np.sum(z_tilde**2)
+            beta = (np.sum(z_tilde * y_tilde) / denom) if denom > 1e-12 else 0.0
+
+            # Predict unobserved entries for each model
+            pred_mat = y_item_mean[:, None] + beta * (metrics_mat - z_item_mean[:, None])
+            unobs_pred = np.where(~mask, pred_mat, 0.0).sum(axis=0)
+            model_est = (sums + unobs_pred) / n_items
+
+            order = avail[np.argsort(-model_est[avail])]
+            n_avail = len(order)
+            weights = 1.0 / (np.arange(n_avail) + 1.0)
+            probs = weights / np.sum(weights)
+
+            batch_limit = min(effective_batch_size, int(b - cost) + 1)
+            chosen_indices = rng.choice(n_avail, size=batch_limit, p=probs)
+            added = 0
+
+            for idx in chosen_indices:
+                if cost >= b:
+                    break
+                m = order[idx]
+                if counts[m] >= n_items:
+                    continue
+                item_idx = counts[m]
+                sc = scores_mat[item_idx, m]
+                model_scores[m].append(sc)
+                sums[m] += sc
+                counts[m] += 1
+                mask[item_idx, m] = True
+                cost += costs_arr[item_idx]
+                added += 1
+
+            if added == 0:
+                break
+
+        results_map[b] = {models[i]: list(model_scores[i]) for i in range(n_models)}
+
+    return [results_map[b] for b in budgets]

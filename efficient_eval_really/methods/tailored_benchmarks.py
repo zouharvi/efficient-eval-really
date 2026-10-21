@@ -8,7 +8,7 @@ from efficient_eval_really.methods import (
 )
 
 
-def _kmedoids(D: np.ndarray, k: int, seed: int = 42) -> list[int]:  # D= Distance Matrix of Items, k= number of clusters
+def _kmedoids(D: np.ndarray, k: int, seed: int = 0) -> list[int]:  # D= Distance Matrix of Items, k= number of clusters
     """Implements PAM K-Medoids on a precomputed distance matrix."""
     n = D.shape[0]  # n=number of items
     if k >= n:  # edge case with less items that desired clusters
@@ -26,7 +26,7 @@ def _kmedoids(D: np.ndarray, k: int, seed: int = 42) -> list[int]:  # D= Distanc
     return medoids
 
 
-def tailored_benchmarks_budgets(data: Data, budgets: Budgets, g_frac: float = 0.5) -> ModelScoresAtBudget:
+def tailored_benchmarks_budgets(data: Data, budgets: Budgets, g_frac: float = 0.5, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """TailoredBench: per-model tailored item subsets via K-Medoids."""
     from sklearn.metrics import pairwise_distances
     from sklearn.preprocessing import StandardScaler
@@ -45,7 +45,7 @@ def tailored_benchmarks_budgets(data: Data, budgets: Budgets, g_frac: float = 0.
         k_g = max(1, round(k * g_frac))
 
         # k-Medoids on standardized item vectors (items × models)
-        g_set = _kmedoids(D(S), k_g)
+        g_set = _kmedoids(D(S), k_g, seed=seed)
 
         if k == k_g:
             results.append({m: [data[i]["scores"][m] for i in g_set] for m in models})

@@ -35,7 +35,7 @@ def _fit_2pl_irt(Y: np.ndarray) -> tuple:
     return a, b, theta
 
 
-def irt_chatbots_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
+def irt_chatbots_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """Approximate pairwise comparison with a single binary threshold c = mean(S).
     Fit general 2PL and then prompts selected by their fitted discrimination `a`.
     """

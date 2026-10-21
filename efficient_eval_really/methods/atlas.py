@@ -4,7 +4,7 @@ from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 from efficient_eval_really.methods.irt_chatbots import _fit_2pl_irt
 
 
-def atlas_budgets(data: Data, budgets: Budgets, seed: int = 42) -> ModelScoresAtBudget:
+def atlas_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """ATLAS: Adaptive Testing for Language Models via Item Response Theory (CAT).
 
     Algorithm from Li et al. (2025):

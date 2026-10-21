@@ -7,6 +7,8 @@ def one_hundred_instances_budgets(
     data: Data,
     budgets: Budgets,
     reg: float = 1e-3,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """100 Instances is all you need: Reference Instances + Linear Assessor.
 

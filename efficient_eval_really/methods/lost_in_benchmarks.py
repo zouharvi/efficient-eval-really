@@ -11,7 +11,7 @@ def _fit_psn_irt(
     lr: float = 0.003,
     hidden: int = 64,
     embed: int = 128,
-    seed: int = 42,
+    seed: int = 0,
 ):
     """Fit PSN-IRT.
 
@@ -186,7 +186,7 @@ def _prepare_training_matrix(data: Data, models: list) -> tuple:
     return Y.T, n_items, n_models
 
 
-def lost_in_benchmarks_budgets(data: Data, budgets: Budgets, method: str) -> ModelScoresAtBudget:
+def lost_in_benchmarks_budgets(data: Data, budgets: Budgets, method: str, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     models = list(data[0]["scores"].keys())
     Y, n_items, n_models = _prepare_training_matrix(data, models)
     if method == "psn":

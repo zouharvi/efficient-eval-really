@@ -10,6 +10,8 @@ def faq_budgets(
     k_factors: int = 5,
     tau_mix: float = 0.1,
     rho: float = 0.5,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Factorized Active Querying (FAQ) for LLM evaluation.
 

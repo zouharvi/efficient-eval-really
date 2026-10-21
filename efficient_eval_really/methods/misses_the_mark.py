@@ -8,7 +8,8 @@ def misses_the_mark_budgets(
     data: Data,
     budgets: Budgets,
     alpha: float = 10.0,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Augmented Inverse Propensity Weighting (AIPW) Benchmark Prediction.
 

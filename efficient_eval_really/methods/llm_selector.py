@@ -7,6 +7,8 @@ def llm_selector_budgets(
     data: Data,
     budgets: Budgets,
     temperature: float = 0.05,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """LLM Selector: Active Model Selection for LLMs via Expected Entropy Minimization.
 
@@ -74,6 +76,8 @@ def select_llm_budgets(
     data: Data,
     budgets: Budgets,
     temperature: float = 0.05,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """SELECT-LLM: Large Language Model Selection with Limited Annotations.
 

@@ -6,7 +6,8 @@ from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 def efficient_benchmarking_apis_budgets(
     data: Data,
     budgets: Budgets,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Thompson Sampling Bandit for Efficient Benchmarking.
 

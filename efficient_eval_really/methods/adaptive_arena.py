@@ -7,8 +7,9 @@ from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 def adaptive_arena_budgets(
     data: Data,
     budgets: Budgets,
-    seed: int = 42,
+    seed: int = 0,
     lambda_reg: float = 1.0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Adaptive-Arena: Fewer Battles, More Gain via A-optimality on Bradley-Terry.
 

@@ -122,4 +122,7 @@ def get_data_dict_all() -> dict[str, Data]:
 
 
 def shuffle_items(data: Data, seed: int) -> Data:
-    pass
+    import numpy as np
+
+    rng = np.random.default_rng(seed)
+    return [data[i] for i in rng.permutation(len(data))]

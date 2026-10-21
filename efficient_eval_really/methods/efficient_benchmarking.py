@@ -6,6 +6,8 @@ from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 def efficient_benchmarking_budgets(
     data: Data,
     budgets: Budgets,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Efficient Benchmarking of Language Models via Greedy Routing.
 

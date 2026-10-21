@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_distances
 from efficient_eval_really.methods import Budgets, Data, ModelScoresAtBudget
 
 
-def diffuse_budgets(data: Data, budgets: Budgets) -> ModelScoresAtBudget:
+def diffuse_budgets(data: Data, budgets: Budgets, seed: int = 0, **kwargs) -> ModelScoresAtBudget:
     """DiffUse: Label-Efficient Model Selection for Text Generation.
 
     Algorithm from Ashury-Tahan et al. (IBM Research, ACL 2024):

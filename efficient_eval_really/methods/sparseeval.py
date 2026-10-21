@@ -13,6 +13,8 @@ def sparseeval_budgets(
     budgets: Budgets,
     refinement_steps: int = 20,
     lambda_reg: float = 1e-4,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """SparseEval: Efficient Evaluation of Large Language Models by Sparse Optimization.
 
@@ -45,7 +47,7 @@ def sparseeval_budgets(
         # Step 1: Anchor Initialization via K-Means
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=ConvergenceWarning)
-            kmeans = KMeans(n_clusters=k, random_state=42, n_init="auto")
+            kmeans = KMeans(n_clusters=k, random_state=seed, n_init="auto")
             kmeans.fit(S)
             anchors = pairwise_distances(kmeans.cluster_centers_, S).argmin(axis=1).tolist()
             anchors = list(dict.fromkeys(anchors))

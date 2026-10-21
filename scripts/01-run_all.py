@@ -1,15 +1,17 @@
 import argparse
+import functools
 import json
 import os
 import statistics
 import time
+import multiprocessing
 
 import numpy as np
 import tqdm
 
 import efficient_eval_really.methods
 import efficient_eval_really.utils
-from efficient_eval_really.data import get_data_dict_all
+from efficient_eval_really.data import get_data_dict_all, shuffle_items
 
 args = argparse.ArgumentParser()
 args.add_argument("--no-reuse", action="store_true", help="Don't reuse results from computed/01-results_all.json even if it exists")
@@ -44,35 +46,52 @@ for method_name, method_fn in efficient_eval_really.methods.METHODS_BUDGETS.item
         parallelization_queue.append((method_name, method_fn, data_name, data, budgets, model_scores_all))
 
 
+
 # do the computation
 def _my_compute_function_coz_lambdas_dont_pickle(x):
     method_name, method_fn, data_name, data, budgets, model_scores_all = x
+
+    if isinstance(method_fn, functools.partial):
+        n_seeds = method_fn.keywords.get("seeds") or 1
+        assert isinstance(n_seeds, int), f"{n_seeds} is type {type(n_seeds)} but should be int"
+    else:
+        n_seeds = 1
+
     t0 = time.perf_counter()
-    model_scores_subset_at_budgets = method_fn(data, budgets)
+    all_seed_results = []
+    for s in range(n_seeds):
+        data_cur = shuffle_items(data, seed=s) if n_seeds > 1 else data
+        model_scores_subset_at_budgets = method_fn(data_cur, budgets, seed=s)
+        res_seed = [
+            efficient_eval_really.utils.meta_evaluate_scores_subset(model_scores_subset_at_budget, model_scores_all)
+            for model_scores_subset_at_budget in model_scores_subset_at_budgets
+        ]
+        all_seed_results.append(res_seed)
     runtime = time.perf_counter() - t0
-    runtime_avg = runtime / len(budgets) if budgets else runtime
-    return (method_name, model_scores_subset_at_budgets, data_name, model_scores_all, budgets, runtime_avg)
+    runtime_avg = (runtime / n_seeds) / len(budgets) if budgets else (runtime / n_seeds)
 
+    # Average meta-eval metrics across seeds for each budget
+    results_local = []
+    for b_idx in range(len(budgets)):
+        b_dict = {}
+        for key in all_seed_results[0][b_idx]:
+            vals = [all_seed_results[s][b_idx][key] for s in range(n_seeds)]
+            valid_vals = [v for v in vals if not np.isnan(v)]
+            b_dict[key] = float(np.mean(valid_vals)) if valid_vals else float("nan")
+        results_local.append(b_dict)
 
-if args.workers > 0:
-    import multiprocessing
+    return (method_name, results_local, data_name, runtime_avg)
 
-    with multiprocessing.Pool(args.workers) as pool:
-        results = list(
-            tqdm.tqdm(
-                pool.imap_unordered(_my_compute_function_coz_lambdas_dont_pickle, parallelization_queue),
-                total=len(parallelization_queue),
-            )
+with multiprocessing.Pool(args.workers) as pool:
+    results = list(
+        tqdm.tqdm(
+            pool.imap_unordered(_my_compute_function_coz_lambdas_dont_pickle, parallelization_queue),
+            total=len(parallelization_queue),
         )
-else:
-    results = [_my_compute_function_coz_lambdas_dont_pickle(x) for x in tqdm.tqdm(parallelization_queue)]
+    )
 
 # collate the results
-for method_name, model_scores_subset_at_budgets, data_name, model_scores_all, budgets, runtime_avg in tqdm.tqdm(results):
-    results_local = []
-    for budget, model_scores_subset_at_budget in zip(budgets, model_scores_subset_at_budgets):
-        results_local.append(efficient_eval_really.utils.meta_evaluate_scores_subset(model_scores_subset_at_budget, model_scores_all))
-
+for method_name, results_local, data_name, runtime_avg in tqdm.tqdm(results):
     existing_entry = results_out.get(method_name, {}).get(data_name, {})
     existing_runtime = existing_entry.get("runtime") if isinstance(existing_entry, dict) else None
 

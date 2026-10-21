@@ -7,6 +7,8 @@ def active_evaluation_budgets(
     data: Data,
     budgets: Budgets,
     exploration_c: float = 1.0,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Active Evaluation: Efficient Evaluation with Successive Elimination (Beat-the-Mean).
 

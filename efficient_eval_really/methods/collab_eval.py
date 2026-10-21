@@ -8,7 +8,8 @@ def collab_eval_budgets(
     data: Data,
     budgets: Budgets,
     rank: int = 2,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """CollabEval: Collaborative Model Evaluation via Matrix Completion + CrossPPI.
 

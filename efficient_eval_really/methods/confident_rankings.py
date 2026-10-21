@@ -10,7 +10,8 @@ def confident_rankings_budgets(
     budgets: Budgets,
     confidence: float = 0.95,
     n_init: int = 5,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Continuous Computerized Adaptive Testing with Confident Multi-Model Ranking.
 

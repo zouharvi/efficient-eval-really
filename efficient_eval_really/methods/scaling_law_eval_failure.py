@@ -8,7 +8,8 @@ def scaling_law_eval_failure_budgets(
     data: Data,
     budgets: Budgets,
     n_iter: int = 25,
-    seed: int = 42,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """The Scaling Law of Evaluation Failure: IRT Recovery under Sparsity.
 

@@ -9,6 +9,8 @@ def neyman_allocation_budgets(
     method: str = "proxy",
     n_strata: int = 5,
     delta: float = 0.75,
+    seed: int = 0,
+    **kwargs,
 ) -> ModelScoresAtBudget:
     """Stratified sampling with Approximate Neyman allocation.
 
@@ -64,7 +66,7 @@ def neyman_allocation_budgets(
     else:
         raise ValueError(f"Unknown method: {method!r}")
 
-    rng = np.random.default_rng(42)
+    rng = np.random.default_rng(seed)
     results: ModelScoresAtBudget = []
 
     for budget in budgets:
