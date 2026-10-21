@@ -48,7 +48,7 @@ for method_name, method_fn in efficient_eval_really.methods.METHODS_BUDGETS.item
 
 
 # do the computation
-def _my_compute_function_coz_lambdas_dont_pickle(x):
+def _my_compute_method_with_data(x):
     method_name, method_fn, data_name, data, budgets, model_scores_all = x
 
     if isinstance(method_fn, functools.partial):
@@ -85,7 +85,7 @@ def _my_compute_function_coz_lambdas_dont_pickle(x):
 with multiprocessing.Pool(args.workers) as pool:
     results = list(
         tqdm.tqdm(
-            pool.imap_unordered(_my_compute_function_coz_lambdas_dont_pickle, parallelization_queue),
+            pool.imap_unordered(_my_compute_method_with_data, parallelization_queue),
             total=len(parallelization_queue),
         )
     )
