@@ -42,7 +42,8 @@ for method_name, method_fn in efficient_eval_really.methods.METHODS_BUDGETS.item
             continue
 
         budgets = [int(b * len(data) * len(data[0]["scores"])) for b in BUDGETS_FRAC]
-        model_scores_all = {model: [item["scores"][model] for item in data] for model in data[0]["scores"]}
+        # meta-evaluate against the ground truth, which differs from the observed scores e.g. under annotator drift
+        model_scores_all = {model: [item.get("scores_true", item["scores"])[model] for item in data] for model in data[0]["scores"]}
         parallelization_queue.append((method_name, method_fn, data_name, data, budgets, model_scores_all))
 
 
