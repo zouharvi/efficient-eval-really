@@ -8,7 +8,10 @@ Budget = int
 Budgets = list[int]
 
 class DataItem(TypedDict):
+    # scores observed by the evaluation methods (e.g. human annotations, possibly noisy)
     scores: dict[Model, float]
+    # ground-truth scores used for meta-evaluation, if they differ from the observed `scores` (e.g. annotator drift)
+    scores_true: NotRequired[dict[Model, float]]
     scores_metrics: dict[str, dict[Model, float]]
     cost: float
     embedding: NotRequired[list[float]]
