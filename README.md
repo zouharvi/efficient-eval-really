@@ -1,4 +1,4 @@
-# Efficient Evaluation, Really?
+# Efficient Evaluation Bench
 
 > There is an epidemic of efficient evaluation methods that promise more robust and economical evaluation results with fractions of the cost.
 > These works oftentimes ignore each other and break when used outside of their original setup.

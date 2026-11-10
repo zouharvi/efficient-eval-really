@@ -1,10 +1,10 @@
 import argparse
 import functools
 import json
+import multiprocessing
 import os
 import statistics
 import time
-import multiprocessing
 
 import numpy as np
 import tqdm
